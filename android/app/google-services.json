@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1019438892236",
+    "project_id": "ai-detector-eda5c",
+    "storage_bucket": "ai-detector-eda5c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1019438892236:android:82540c7644a02ceefdee69",
+        "android_client_info": {
+          "package_name": "com.aidetector"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1019438892236-rmvljnk76h02nn5ovg2om0p8jgg189do.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC31BTN4kd1wtG-ekTKRj3YUAYdDJF96MQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1019438892236-rmvljnk76h02nn5ovg2om0p8jgg189do.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

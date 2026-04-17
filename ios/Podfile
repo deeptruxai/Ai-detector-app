@@ -15,6 +15,9 @@ if linkage != nil
 end
 
 target 'AIDetector' do
+  # Required for Firebase Swift pods when not using dynamic frameworks: Obj-C deps need module maps.
+  use_modular_headers!
+
   config = use_native_modules!
 
   use_react_native!(
