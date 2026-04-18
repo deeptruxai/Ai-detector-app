@@ -9,11 +9,8 @@ import { getApps, getApp } from '@react-native-firebase/app';
 
 class FirebaseConfig {
   private static instance: FirebaseConfig;
-  private _isInitialized: boolean = false;
 
-  private constructor() {
-    this.initialize();
-  }
+  private constructor() {}
 
   public static getInstance(): FirebaseConfig {
     if (!FirebaseConfig.instance) {
@@ -22,18 +19,16 @@ class FirebaseConfig {
     return FirebaseConfig.instance;
   }
 
-  private initialize(): void {
-    const apps = getApps();
-    if (apps.length > 0) {
-      this._isInitialized = true;
-      console.log('Firebase initialized successfully');
-    } else {
-      console.warn('Firebase app not initialized. Check your configuration files.');
-    }
-  }
-
+  /**
+   * True when the native default app exists (after FirebaseApp.configure() on iOS
+   * and the equivalent on Android). Always read fresh — do not cache at module load.
+   */
   public get isInitialized(): boolean {
-    return this._isInitialized;
+    try {
+      return getApps().length > 0;
+    } catch {
+      return false;
+    }
   }
 
   public get app() {

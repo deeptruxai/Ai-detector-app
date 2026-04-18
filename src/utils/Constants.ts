@@ -158,7 +158,7 @@ export const SettingsConst = {
 
 export const SplashConst = {
   appName: 'AIDetect',
-  tagline: 'SECURE. VERIFY. PROTECT.',
+  tagline: 'Secure. Verify. Protect.',
   bootText: 'INITIALIZING NEURAL CORE',
 };
 

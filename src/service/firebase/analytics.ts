@@ -126,6 +126,14 @@ class AnalyticsService {
   }
 }
 
-// Export singleton instance
-export const analyticsService = AnalyticsService.getInstance();
+// Lazy proxy: avoids calling getAnalytics() at module load (before native Firebase is ready).
+const analyticsServiceProxy = new Proxy({} as AnalyticsService, {
+  get(_target, prop) {
+    const inst = AnalyticsService.getInstance();
+    const value = (inst as unknown as Record<string | symbol, unknown>)[prop as string];
+    return typeof value === 'function' ? (value as (...args: unknown[]) => unknown).bind(inst) : value;
+  },
+});
+
+export const analyticsService = analyticsServiceProxy;
 export default analyticsService;
