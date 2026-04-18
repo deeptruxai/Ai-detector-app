@@ -18,11 +18,11 @@ import { PrimaryButton } from '@/core/components/button';
 import { useAIDetectorStore } from '@/store';
 import { authService } from '@/service/firebase';
 import { useTheme } from '@/core/theme';
-import type { HomeScreenProps } from '@/navigation/types';
+import type { DashboardScreenProps } from '@/navigation/types';
 import { CommonConst, DashboardConst, StatusConst } from '@/utils/Constants';
 
 export const DashboardScreen: React.FC = () => {
-  const navigation = useNavigation<HomeScreenProps['navigation']>();
+  const navigation = useNavigation<DashboardScreenProps['navigation']>();
   const { theme } = useTheme();
   const [inputText, setInputText] = useState('');
 
@@ -37,7 +37,7 @@ export const DashboardScreen: React.FC = () => {
     setStatus('analyzing');
 
     // TODO: Replace with real AI detection API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise<void>(resolve => setTimeout(() => resolve(), 1500));
 
     // Mock result — wire up your real detection service here
     const aiScore = Math.random() * 100;

@@ -15,6 +15,9 @@ interface InputProps extends TextInputProps {
   error?: string;
   containerStyle?: ViewStyle;
   inputStyle?: TextStyle;
+  labelStyle?: TextStyle;
+  /** Merged into the inner field row (background, height, padding, border). */
+  inputRowStyle?: ViewStyle;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
 }
@@ -24,6 +27,8 @@ export const Input: React.FC<InputProps> = ({
   error,
   containerStyle,
   inputStyle,
+  labelStyle,
+  inputRowStyle,
   leftIcon,
   rightIcon,
   onFocus,
@@ -54,6 +59,7 @@ export const Input: React.FC<InputProps> = ({
               fontSize: theme.typography.fontSize.sm,
               marginBottom: theme.spacing.xs,
             },
+            labelStyle,
           ]}>
           {label}
         </Text>
@@ -71,6 +77,7 @@ export const Input: React.FC<InputProps> = ({
             borderRadius: theme.borderRadius.md,
             paddingHorizontal: theme.spacing.md,
           },
+          inputRowStyle,
         ]}>
         {leftIcon && <View style={styles.leftIcon}>{leftIcon}</View>}
         <TextInput

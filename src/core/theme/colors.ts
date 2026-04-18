@@ -36,6 +36,10 @@ export const primaryThemeColors: ThemeColors = {
   appBarBackground: 'rgba(19, 19, 19, 0.6)',
   appBarIcon: '#D0D5D3',
   appBarShadow: 'rgba(78, 222, 163, 0.06)',
+
+  splashRadialEdge: '#050505',
+  splashProgressTrack: '#353534',
+  splashBootCaption: '#71717A',
 };
 
 /** Alternate accent; same dark surfaces (optional second palette) */

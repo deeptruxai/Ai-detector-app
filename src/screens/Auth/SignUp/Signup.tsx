@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -7,134 +7,210 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Input } from '@/components/Input';
-import { Text, SafeScreen } from '@/core/components';
+import { AppBar, Text, SafeScreen, PrimaryButton } from '@/core/components';
 import { Theme, useTheme } from '@/core/theme';
 import { AuthConst } from '@/utils/Constants';
 import { useSignup } from './useSignup';
 
+const PLACEHOLDER_MUTED = 'rgba(187, 202, 191, 0.4)';
+
 const SignupScreen: React.FC = () => {
   const { theme } = useTheme();
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(theme, insets.top), [theme, insets.top]);
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     name,
     email,
     password,
+    phone,
     errors,
     loading,
     setName,
     setEmail,
     setPassword,
+    setPhone,
     handleSignup,
+    handleGoogleSignup,
+    googleLoading,
+    openTerms,
+    openPrivacy,
     navigateToLogin,
   } = useSignup();
+
+  const fieldRowStyle = useMemo(
+    () => ({
+      backgroundColor: '#2a2a2a',
+      borderColor: 'rgba(255, 255, 255, 0.06)',
+      height: 56,
+    }),
+    [],
+  );
+
+  const fieldLabelStyle = useMemo(
+    () => ({
+      fontSize: 10,
+      lineHeight: 15,
+      letterSpacing: 1.5,
+      color: theme.colors.textSecondary,
+      marginBottom: 8,
+      textTransform: 'uppercase' as const,
+    }),
+    [theme.colors.textSecondary],
+  );
 
   return (
     <SafeScreen style={styles.container}>
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
+        style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <View style={styles.glowRight} />
+        <View style={styles.glowLeft} />
+
+        <AppBar
+          title={AuthConst.brandHeaderTitle}
+          rightLabel={AuthConst.brandHeaderSignIn}
+          onRightPress={navigateToLogin}
+        />
+
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
-          <View style={styles.topGlow} />
-          <View style={styles.bottomGlow} />
-
-          <View style={styles.header}>
-            <View style={styles.logoOuterGlow}>
-              <View style={styles.logoWrap}>
-                <Icon name="shield-check" size={26} color={theme.colors.primary} />
-              </View>
-            </View>
-            <Text style={styles.title}>AIDetect</Text>
-            <Text style={styles.subtitle}>Verify truth in a synthetic world</Text>
+          <View style={styles.hero}>
+            <Text style={styles.heroTitle}>{AuthConst.signupHeroTitle}</Text>
+            <Text style={styles.heroSubtitle}>
+              {AuthConst.signupHeroSubtitleLine1}
+              {'\n'}
+              {AuthConst.signupHeroSubtitleLine2}
+            </Text>
           </View>
 
-          <TouchableOpacity activeOpacity={0.85} style={styles.socialButton}>
-            <Icon name="google" size={18} color={theme.colors.text} />
-            <Text style={styles.socialButtonText}>{AuthConst.continueWithGoogle}</Text>
-          </TouchableOpacity>
-
-          <View style={styles.dividerRow}>
-            <View style={styles.divider} />
-            <Text style={styles.dividerText}>OR CONTINUE WITH EMAIL</Text>
-            <View style={styles.divider} />
-          </View>
-
-          <View style={styles.form}>
+          <View style={styles.formCard}>
             <Input
-              label={AuthConst.signupNameLabel}
-              placeholder={AuthConst.signupNamePlaceholder}
+              label={AuthConst.fullNameLabelUpper}
+              labelStyle={fieldLabelStyle}
+              inputRowStyle={fieldRowStyle}
+              placeholder={AuthConst.signupNamePlaceholderFigma}
+              placeholderTextColor={PLACEHOLDER_MUTED}
               value={name}
               onChangeText={setName}
               error={errors.name}
               autoCapitalize="words"
-              rightIcon={<Icon name="account-outline" size={18} color={theme.colors.textSecondary} />}
-              containerStyle={styles.inputContainer}
+              leftIcon={<Icon name="account-outline" size={18} color={theme.colors.textSecondary} />}
+              containerStyle={styles.inputWrap}
               inputStyle={styles.inputText}
             />
 
             <Input
-              label={AuthConst.emailLabel}
-              placeholder={AuthConst.emailPlaceholder}
+              label={AuthConst.signupEmailLabelUpper}
+              labelStyle={fieldLabelStyle}
+              inputRowStyle={fieldRowStyle}
+              placeholder={AuthConst.signupEmailPlaceholderFigma}
+              placeholderTextColor={PLACEHOLDER_MUTED}
               value={email}
               onChangeText={setEmail}
               error={errors.email}
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
-              rightIcon={<Icon name="at" size={18} color={theme.colors.textSecondary} />}
-              containerStyle={styles.inputContainer}
+              leftIcon={<Icon name="email-outline" size={18} color={theme.colors.textSecondary} />}
+              containerStyle={styles.inputWrap}
               inputStyle={styles.inputText}
             />
 
             <Input
-              label={AuthConst.passwordLabel}
+              label={AuthConst.signupPasswordLabelUpper}
+              labelStyle={fieldLabelStyle}
+              inputRowStyle={fieldRowStyle}
               placeholder={AuthConst.passwordPlaceholder}
+              placeholderTextColor={PLACEHOLDER_MUTED}
               value={password}
               onChangeText={setPassword}
               error={errors.password}
-              secureTextEntry
+              secureTextEntry={!showPassword}
               autoCapitalize="none"
-              rightIcon={<Icon name="lock-outline" size={18} color={theme.colors.textSecondary} />}
-              containerStyle={styles.inputContainer}
+              leftIcon={<Icon name="lock-outline" size={18} color={theme.colors.textSecondary} />}
+              rightIcon={
+                <TouchableOpacity
+                  onPress={() => setShowPassword(v => !v)}
+                  hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                  accessibilityRole="button"
+                  accessibilityLabel={showPassword ? 'Hide password' : 'Show password'}>
+                  <Icon
+                    name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                    size={20}
+                    color={theme.colors.textSecondary}
+                  />
+                </TouchableOpacity>
+              }
+              containerStyle={styles.inputWrap}
               inputStyle={styles.inputText}
             />
 
-            <View style={styles.optionsRow}>
-              <TouchableOpacity activeOpacity={0.85} style={styles.rememberRow}>
-                <Icon name="checkbox-blank-outline" size={16} color={theme.colors.borderLight} />
-                <Text style={styles.rememberText}>Remember me</Text>
-              </TouchableOpacity>
-              <TouchableOpacity activeOpacity={0.85}>
-                <Text style={styles.forgotText}>Forgot Password?</Text>
-              </TouchableOpacity>
-            </View>
+            <Input
+              label={AuthConst.phoneLabelUpper}
+              labelStyle={fieldLabelStyle}
+              inputRowStyle={fieldRowStyle}
+              placeholder={AuthConst.signupPhonePlaceholder}
+              placeholderTextColor={PLACEHOLDER_MUTED}
+              value={phone}
+              onChangeText={setPhone}
+              keyboardType="phone-pad"
+              leftIcon={<Icon name="phone-outline" size={18} color={theme.colors.textSecondary} />}
+              containerStyle={styles.inputWrapLast}
+              inputStyle={styles.inputText}
+            />
 
+            <PrimaryButton
+              title={AuthConst.signupHeroTitle}
+              onPress={handleSignup}
+              loading={loading}
+              disabled={loading || googleLoading}
+              fullWidth
+              size="large"
+              rightIcon={<Icon name="arrow-right" size={16} color={theme.colors.onPrimary} />}
+            />
+
+            <View style={styles.legalBlock}>
+              <Text style={styles.legalLine}>{AuthConst.signupLegalLine1}</Text>
+              <Text style={styles.legalLine}>
+                <Text style={styles.legalLink} onPress={openTerms}>
+                  {AuthConst.termsOfService}
+                </Text>
+                {AuthConst.signupLegalAnd}
+                <Text style={styles.legalLink} onPress={openPrivacy}>
+                  {AuthConst.privacyPolicy}
+                </Text>
+                {AuthConst.signupLegalSuffix}
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.altSignup}>
+            <Text style={styles.altLabel}>{AuthConst.dividerOrContinueWith}</Text>
             <TouchableOpacity
               activeOpacity={0.85}
-              onPress={handleSignup}
-              disabled={loading}
-              style={[styles.signupButton, loading && styles.signupButtonDisabled]}>
-              <Text style={styles.signupButtonText}>
-                {loading ? 'Please wait...' : AuthConst.signUpButton}
+              style={[
+                styles.googleRow,
+                (loading || googleLoading) && styles.googleRowDisabled,
+              ]}
+              onPress={handleGoogleSignup}
+              disabled={loading || googleLoading}>
+              <Icon name="google" size={20} color={theme.colors.text} />
+              <Text style={styles.googleRowText}>
+                {googleLoading ? AuthConst.signingInWithGoogle : AuthConst.continueWithGoogle}
               </Text>
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity activeOpacity={0.85} style={styles.phoneButton}>
-            <Icon name="cellphone" size={16} color={theme.colors.primary} />
-            <Text style={styles.phoneButtonText}>Sign in with Phone Number (OTP)</Text>
-          </TouchableOpacity>
-
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>{AuthConst.signupFooterPrefix}</Text>
-            <TouchableOpacity onPress={navigateToLogin}>
-              <Text style={styles.loginLink}>{AuthConst.signupFooterCta}</Text>
-            </TouchableOpacity>
+          <View style={styles.signatureBlock}>
+            <View style={styles.signatureLine} />
+            <Text style={styles.signatureText}>{AuthConst.footerSignatureLine}</Text>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -144,195 +220,157 @@ const SignupScreen: React.FC = () => {
 
 export default SignupScreen;
 
-const createStyles = (theme: Theme) =>
+const createStyles = (theme: Theme, insetTop: number) =>
   StyleSheet.create({
     container: {
-      backgroundColor: theme.colors.background,
+      backgroundColor: theme.colors.backgroundSecondary,
+    },
+    flex: {
+      flex: 1,
+    },
+    glowRight: {
+      position: 'absolute',
+      right: -80,
+      top: '25%',
+      bottom: '38%',
+      width: 384,
+      borderRadius: 999,
+      backgroundColor: 'rgba(78, 222, 163, 0.05)',
+      opacity: 0.9,
+      zIndex: 0,
+    },
+    glowLeft: {
+      position: 'absolute',
+      left: -80,
+      top: '38%',
+      bottom: '25%',
+      width: 384,
+      borderRadius: 999,
+      backgroundColor: 'rgba(78, 222, 163, 0.05)',
+      opacity: 0.9,
+      zIndex: 0,
     },
     scrollContent: {
       flexGrow: 1,
-      paddingHorizontal: 24,
-      paddingTop: 42,
-      paddingBottom: 40,
-      justifyContent: 'center',
-      position: 'relative',
+      paddingHorizontal: 16,
+      paddingTop: insetTop + 96,
+      paddingBottom: 48,
     },
-    topGlow: {
-      position: 'absolute',
-      width: 156,
-      height: 353,
-      borderRadius: 999,
-      backgroundColor: theme.colors.brandGlow,
-      top: -80,
-      left: -24,
-      opacity: 0.18,
-    },
-    bottomGlow: {
-      position: 'absolute',
-      width: 150,
-      height: 280,
-      borderRadius: 999,
-      backgroundColor: theme.colors.brandGlow,
-      bottom: -90,
-      right: -24,
-      opacity: 0.18,
-    },
-    header: {
+    hero: {
       alignItems: 'center',
-      marginBottom: 48,
+      marginBottom: 32,
+      gap: 12,
     },
-    logoOuterGlow: {
-      borderRadius: 999,
-      padding: 16,
-      backgroundColor: theme.colors.brandGlow,
-      marginBottom: 16,
-    },
-    logoWrap: {
-      width: 64,
-      height: 64,
-      borderRadius: 16,
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: theme.colors.surface,
-    },
-    title: {
+    heroTitle: {
       color: theme.colors.text,
-      marginBottom: 6,
       fontSize: 36,
       lineHeight: 40,
-      letterSpacing: -1.8,
+      letterSpacing: -0.9,
+      textAlign: 'center',
       fontFamily: theme.typography.fontFamily.bold,
     },
-    subtitle: {
+    heroSubtitle: {
       color: theme.colors.textSecondary,
-      fontSize: theme.typography.fontSize.md,
-      lineHeight: 24,
+      fontSize: 18,
+      lineHeight: 28,
+      textAlign: 'center',
+      maxWidth: 384,
       fontFamily: theme.typography.fontFamily.regular,
     },
-    socialButton: {
-      height: 56,
-      borderRadius: 12,
-      backgroundColor: theme.colors.surface,
+    formCard: {
+      borderRadius: 32,
       borderWidth: 1,
-      borderColor: theme.colors.border,
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexDirection: 'row',
-      gap: 12,
+      borderColor: 'rgba(255, 255, 255, 0.05)',
+      backgroundColor: 'rgba(32, 31, 31, 0.6)',
+      paddingHorizontal: 33,
+      paddingTop: 41,
+      paddingBottom: 33,
+      marginBottom: 32,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: 0.4,
+      shadowRadius: 40,
+      elevation: 12,
+    },
+    inputWrap: {
       marginBottom: 24,
     },
-    socialButtonText: {
-      color: theme.colors.text,
-      fontSize: theme.typography.fontSize.md,
-      lineHeight: 24,
-      fontFamily: theme.typography.fontFamily.medium,
-    },
-    dividerRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 10,
-      marginBottom: 20,
-    },
-    divider: {
-      flex: 1,
-      height: 1,
-      backgroundColor: theme.colors.border,
-      opacity: 0.7,
-    },
-    dividerText: {
-      color: theme.colors.textDisabled,
-      fontSize: 10,
-      letterSpacing: 2,
-      fontFamily: theme.typography.fontFamily.medium,
-    },
-    form: {
-      marginBottom: 16,
-    },
-    inputContainer: {
-      marginBottom: 14,
+    inputWrapLast: {
+      marginBottom: 24,
     },
     inputText: {
       color: theme.colors.text,
     },
-    signupButton: {
-      marginTop: 8,
-      height: 56,
-      borderRadius: 12,
-      backgroundColor: theme.colors.primary,
-      alignItems: 'center',
-      justifyContent: 'center',
-      shadowColor: theme.colors.primary,
-      shadowOffset: { width: 0, height: 10 },
-      shadowOpacity: 0.3,
-      shadowRadius: 18,
-      elevation: 8,
+    legalBlock: {
+      marginTop: 32,
+      paddingTop: 33,
+      borderTopWidth: 1,
+      borderTopColor: 'rgba(255, 255, 255, 0.05)',
     },
-    signupButtonDisabled: {
-      opacity: 0.6,
-    },
-    signupButtonText: {
-      color: theme.colors.onPrimary,
-      fontSize: theme.typography.fontSize.lg,
-      lineHeight: 28,
-      fontFamily: theme.typography.fontFamily.semiBold,
-    },
-    optionsRow: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: 16,
-      paddingHorizontal: 2,
-    },
-    rememberRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 6,
-    },
-    rememberText: {
+    legalLine: {
       color: theme.colors.textSecondary,
-      fontSize: theme.typography.fontSize.xs,
-      lineHeight: 16,
+      fontSize: 12,
+      lineHeight: 19.5,
+      textAlign: 'center',
       fontFamily: theme.typography.fontFamily.regular,
     },
-    forgotText: {
-      color: theme.colors.primary,
-      fontSize: theme.typography.fontSize.xs,
-      lineHeight: 16,
-      fontFamily: theme.typography.fontFamily.semiBold,
-    },
-    phoneButton: {
-      height: 44,
-      borderRadius: 999,
-      borderWidth: 1,
-      borderColor: theme.colors.border,
-      backgroundColor: theme.colors.backgroundSecondary,
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexDirection: 'row',
-      gap: 8,
-      marginBottom: 32,
-      alignSelf: 'center',
-      paddingHorizontal: 22,
-    },
-    phoneButtonText: {
+    legalLink: {
       color: theme.colors.text,
-      fontSize: theme.typography.fontSize.sm,
-      lineHeight: 20,
+      textDecorationLine: 'underline',
+      textDecorationColor: 'rgba(255, 255, 255, 0.2)',
+    },
+    altSignup: {
+      alignItems: 'center',
+      marginBottom: 24,
+    },
+    altLabel: {
+      fontSize: 10,
+      lineHeight: 15,
+      letterSpacing: 2,
+      color: 'rgba(187, 202, 191, 0.4)',
+      marginBottom: 16,
+      textTransform: 'uppercase',
       fontFamily: theme.typography.fontFamily.medium,
     },
-    footer: {
+    googleRow: {
       flexDirection: 'row',
-      justifyContent: 'center',
       alignItems: 'center',
-      marginTop: 8,
+      justifyContent: 'center',
+      gap: 16,
+      height: 56,
+      width: '100%',
+      borderRadius: 12,
+      backgroundColor: '#2a2a2a',
+      borderWidth: 1,
+      borderColor: 'rgba(255, 255, 255, 0.05)',
+      opacity: 1,
     },
-    footerText: {
-      fontSize: 14,
-      color: theme.colors.textSecondary,
+    googleRowText: {
+      color: '#e5e2e1',
+      fontSize: theme.typography.fontSize.md,
+      lineHeight: 24,
+      fontFamily: theme.typography.fontFamily.regular,
     },
-    loginLink: {
-      fontSize: 14,
+    googleRowDisabled: {
+      opacity: 0.55,
+    },
+    signatureBlock: {
+      alignItems: 'center',
+      opacity: 0.3,
+      paddingVertical: 32,
+      gap: 16,
+    },
+    signatureLine: {
+      width: 1,
+      height: 48,
+      backgroundColor: theme.colors.primary,
+      opacity: 0.5,
+    },
+    signatureText: {
+      fontSize: 10,
+      lineHeight: 15,
+      letterSpacing: 3,
       color: theme.colors.primary,
-      fontFamily: theme.typography.fontFamily.semiBold,
+      fontFamily: theme.typography.fontFamily.regular,
     },
   });

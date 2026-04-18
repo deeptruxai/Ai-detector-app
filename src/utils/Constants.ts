@@ -7,9 +7,47 @@ export const CommonConst = {
 export const AuthConst = {
   loginTitle: 'Sign In',
   loginSubtitle: 'High-precision AI network',
+  /** Figma 4311:2 — login hero + form chrome */
+  dividerOrEmail: 'OR CONTINUE WITH EMAIL',
+  emailLabelUpper: 'EMAIL ADDRESS',
+  passwordLabelUpper: 'PASSWORD',
+  loginEmailPlaceholder: 'name@company.com',
   signupTitle: 'Sign Up',
   signupSubtitle: 'High-precision network',
+  /** Figma 4311:154 — Sign up */
+  signupHeroTitle: 'Create Account',
+  signupHeroSubtitleLine1: 'Join the high-precision network of',
+  signupHeroSubtitleLine2: 'synthetic media verification.',
+  signupNamePlaceholderFigma: 'Johnathan Doe',
+  signupEmailPlaceholderFigma: 'verify@aidetect.io',
+  signupPhonePlaceholder: '+1 (555) 000-0000',
+  fullNameLabelUpper: 'FULL NAME',
+  signupEmailLabelUpper: 'EMAIL ADDRESS',
+  signupPasswordLabelUpper: 'PASSWORD',
+  phoneLabelUpper: 'PHONE NUMBER',
+  dividerOrContinueWith: 'OR CONTINUE WITH',
+  signupLegalLine1: 'By signing up, you agree to our',
+  termsOfService: 'Terms of Service',
+  signupLegalAnd: ' and ',
+  privacyPolicy: 'Privacy Policy',
+  signupLegalSuffix: '.',
+  footerSignatureLine: 'SECURE. AUTHENTIC. PROTECTED.',
+  brandHeaderTitle: 'AIDetect',
+  brandHeaderSignIn: 'Sign In',
+  legalPlaceholderTitle: 'Notice',
+  legalPlaceholderMessage: 'This content will be available in a future update.',
+  webViewTermsTitle: 'Terms of Service',
+  webViewPrivacyTitle: 'Privacy Policy',
+  phoneAuthTitle: 'Phone sign-in',
+  phoneAuthHeadline: 'Enter your number',
+  phoneAuthSubtitle: 'We will send a verification code by SMS.',
+  phoneAuthCta: 'Send code',
+  phoneRequiredError: 'Please enter your phone number with country code.',
+  /** In-app WebView allowlist uses `src/utils/legalUrls`. */
+  termsUrl: 'https://aidetect.in/terms',
+  privacyUrl: 'https://aidetect.in/privacy',
   continueWithGoogle: 'Continue with Google',
+  signingInWithGoogle: 'Signing in…',
   dividerOr: 'OR',
   emailLabel: 'Email Address',
   emailPlaceholder: 'Enter your email',
@@ -17,8 +55,8 @@ export const AuthConst = {
   passwordPlaceholder: '••••••••',
   signInButton: 'Sign In',
   signUpButton: 'Sign Up',
-  loginFooterPrefix: 'New to AIDetect? ',
-  loginFooterCta: 'Register now',
+  loginFooterPrefix: "Don't have an account? ",
+  loginFooterCta: 'Create an account',
   signupNameLabel: 'Full Name',
   signupNamePlaceholder: 'Enter your name',
   signupFooterPrefix: 'Already have an account? ',
@@ -28,6 +66,10 @@ export const AuthConst = {
   verifyOtpButton: 'Verify Code',
   otpResendPrefix: "Didn't receive code? ",
   otpResendCta: 'Resend now',
+  otpResending: 'Sending…',
+  otpResentMessage: 'A new verification code has been sent.',
+  otpIncompleteError: 'Please enter the full 6-digit code.',
+  otpVerifyingMessage: 'Verifying…',
   loginFailedTitle: 'Login Failed',
   tryAgainMessage: 'Please try again.',
   resetEmailRequired: 'Enter your email to reset password',
@@ -53,7 +95,8 @@ export const HomeConst = {
   badgeSubtitle: 'Unrestricted High-Precision Scans',
   sectionTitle: 'Verification Modes',
   textModeTitle: 'Text Detection',
-  textModeDescription: 'Analyze documents, emails, and articles for AI patterns.',
+  textModeDescription:
+    'Analyze documents, emails, and articles for AI patterns.',
   textModeIcon: '📄',
   imageModeTitle: 'Image Detection',
   imageModeDescription: 'Identify AI-generated images and deepfake visuals.',
@@ -62,7 +105,8 @@ export const HomeConst = {
   videoModeDescription: 'Scan videos for synthetic manipulation and deepfakes.',
   videoModeIcon: '🎥',
   newsModeTitle: 'News Verify',
-  newsModeDescription: 'Check news credibility and identify bot-generated reports.',
+  newsModeDescription:
+    'Check news credibility and identify bot-generated reports.',
   newsModeIcon: '🌐',
 };
 
@@ -157,9 +201,10 @@ export const SettingsConst = {
 };
 
 export const SplashConst = {
-  appName: 'AIDetect',
-  tagline: 'Secure. Verify. Protect.',
+  appName: 'AI Detector',
+  tagline: 'SECURE. VERIFY. PROTECT.',
   bootText: 'INITIALIZING NEURAL CORE',
+  navigationDelayMs: 3000,
 };
 
 export const ApiConst = {

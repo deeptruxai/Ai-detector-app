@@ -32,7 +32,7 @@ const ScanningStatusScreen: React.FC<ScanningStatusScreenProps> = ({ route, navi
     }, 30);
 
     const timer = setTimeout(() => {
-      navigation.replace('Dashboard'); // For now, go back to dashboard
+      navigation.replace('Main', { screen: 'Dashboard' });
     }, 4000);
 
     return () => {

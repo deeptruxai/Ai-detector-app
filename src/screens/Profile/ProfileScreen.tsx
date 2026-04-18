@@ -13,6 +13,8 @@ import { Text, SafeScreen } from '@/core/components';
 import { authService } from '@/service/firebase';
 import { Theme, useTheme } from '@/core/theme';
 import type { ProfileScreenProps } from '@/navigation/types';
+import { resetNavigation } from '@/navigation/navUtils';
+import { RootStackScreens } from '@/navigation/types';
 import { CommonConst, ProfileConst } from '@/utils/Constants';
 
 const ProfileScreen: React.FC = () => {
@@ -30,10 +32,7 @@ const ProfileScreen: React.FC = () => {
         onPress: async () => {
           const response = await authService.signOut();
           if (response.success) {
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Login' }],
-            });
+            resetNavigation(RootStackScreens.Login);
           }
         },
       },

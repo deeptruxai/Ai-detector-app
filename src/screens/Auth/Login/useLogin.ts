@@ -3,8 +3,8 @@ import { Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { authService } from '@/service/firebase';
 import { RootStackScreens, type LoginScreenProps } from '@/navigation/types';
+import { resetToMainTab } from '@/navigation/navUtils';
 import { AuthConst } from '@/utils/Constants';
-import { resetNavigation } from '@/navigation';
 
 interface LoginErrors {
   email?: string;
@@ -12,26 +12,29 @@ interface LoginErrors {
 }
 
 interface UseLoginReturn {
-  // State
   email: string;
   password: string;
   errors: LoginErrors;
   loading: boolean;
+  googleLoading: boolean;
 
-  // Actions
   setEmail: (value: string) => void;
   setPassword: (value: string) => void;
   handleLogin: () => Promise<void>;
+  handleGoogleLogin: () => Promise<void>;
   handleForgotPassword: () => Promise<void>;
   navigateToSignup: () => void;
+  navigateToPhoneAuth: () => void;
 }
 
 export const useLogin = (): UseLoginReturn => {
+  const navigation = useNavigation<LoginScreenProps['navigation']>();
 
   const [email, setEmailState] = useState('');
   const [password, setPasswordState] = useState('');
   const [errors, setErrors] = useState<LoginErrors>({});
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const validateEmail = useCallback((value: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -85,11 +88,22 @@ export const useLogin = (): UseLoginReturn => {
     setLoading(false);
 
     if (response.success) {
-      resetNavigation(RootStackScreens.Dashboard);
+      resetToMainTab('Dashboard');
     } else {
       Alert.alert(AuthConst.loginFailedTitle, response.error || AuthConst.tryAgainMessage);
     }
   }, [email, password, validateForm]);
+
+  const handleGoogleLogin = useCallback(async () => {
+    setGoogleLoading(true);
+    const response = await authService.signInWithGoogle();
+    setGoogleLoading(false);
+    if (response.success) {
+      resetToMainTab('Dashboard');
+    } else {
+      Alert.alert(AuthConst.loginFailedTitle, response.error || AuthConst.tryAgainMessage);
+    }
+  }, []);
 
   const handleForgotPassword = useCallback(async () => {
     if (!email.trim()) {
@@ -113,19 +127,29 @@ export const useLogin = (): UseLoginReturn => {
   }, [email, validateEmail]);
 
   const navigateToSignup = useCallback(() => {
-    resetNavigation(RootStackScreens.Signup);
-  }, []);
+    navigation.reset({
+      index: 0,
+      routes: [{ name: RootStackScreens.Signup }],
+    });
+  }, [navigation]);
+
+  const navigateToPhoneAuth = useCallback(() => {
+    navigation.navigate(RootStackScreens.PhoneAuth);
+  }, [navigation]);
 
   return {
     email,
     password,
     errors,
     loading,
+    googleLoading,
     setEmail,
     setPassword,
     handleLogin,
+    handleGoogleLogin,
     handleForgotPassword,
     navigateToSignup,
+    navigateToPhoneAuth,
   };
 };
 

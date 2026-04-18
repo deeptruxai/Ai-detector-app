@@ -31,7 +31,7 @@ const SafeScreen: React.FC<SafeScreenProps> = ({
   style,
 }) => {
   const { theme } = useTheme();
-  const statusBarColor = statusBarColorProp ?? theme.colors.background;
+  const statusBarColor = statusBarColorProp;
   const bottomInsetColor = bottomInsetColorProp ?? theme.colors.background;
   const barStyle = barStyleProp ?? 'light-content';
   const insets = useSafeAreaInsets();
@@ -47,7 +47,10 @@ const SafeScreen: React.FC<SafeScreenProps> = ({
       };
 
       if (Platform.OS === 'android') {
-        const subscription = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+        const subscription = BackHandler.addEventListener(
+          'hardwareBackPress',
+          handleBackPress,
+        );
         return () => subscription.remove();
       }
 
@@ -59,8 +62,17 @@ const SafeScreen: React.FC<SafeScreenProps> = ({
   if (gradientColors && gradientColors.length > 0) {
     // Note: install react-native-linear-gradient if you need gradient support
     return (
-      <View style={[styles.container, { backgroundColor: gradientColors[0] }, style]}>
-        <StatusBar barStyle="light-content" backgroundColor={gradientColors[0]} />
+      <View
+        style={[
+          styles.container,
+          { backgroundColor: gradientColors[0] },
+          style,
+        ]}
+      >
+        <StatusBar
+          barStyle="light-content"
+          backgroundColor={gradientColors[0]}
+        />
         {children}
       </View>
     );
@@ -70,9 +82,13 @@ const SafeScreen: React.FC<SafeScreenProps> = ({
   return (
     <View style={styles.container}>
       <StatusBar barStyle={barStyle} backgroundColor={statusBarColor} />
-      <View style={{ height: insets.top, backgroundColor: statusBarColor }} />
+      {statusBarColor && (
+        <View style={{ height: insets.top, backgroundColor: statusBarColor }} />
+      )}
       <View style={[styles.content, style]}>{children}</View>
-      <View style={{ height: insets.bottom, backgroundColor: bottomInsetColor }} />
+      <View
+        style={{ height: insets.bottom, backgroundColor: bottomInsetColor }}
+      />
     </View>
   );
 };

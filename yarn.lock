@@ -2038,6 +2038,11 @@
   resolved "https://registry.npmjs.org/@react-native-firebase/storage/-/storage-23.8.8.tgz"
   integrity sha512-zaP8cl1YoU52RMossRWaqKEuxgZL9L8d9aotRvpZJOgn8ecGubX+slopc3j1LQ6SioCbbb1iN29gHY2EdfPaUA==
 
+"@react-native-google-signin/google-signin@^15.0.0":
+  version "15.0.0"
+  resolved "https://registry.npmjs.org/@react-native-google-signin/google-signin/-/google-signin-15.0.0.tgz"
+  integrity sha512-oU49nE+Z9TT/WaO1K7BH/QL2Nx3d2T3I5PGcYdD8swKNtfhMt8qCX/3mOnNEzthTBPrR0CWFGo3LXpkYspalog==
+
 "@react-native/assets-registry@0.84.0":
   version "0.84.0"
   resolved "https://registry.npmjs.org/@react-native/assets-registry/-/assets-registry-0.84.0.tgz"
@@ -2234,6 +2239,15 @@
   dependencies:
     invariant "^2.2.4"
     nullthrows "^1.1.1"
+
+"@react-navigation/bottom-tabs@^7.15.9":
+  version "7.15.9"
+  resolved "https://registry.npmjs.org/@react-navigation/bottom-tabs/-/bottom-tabs-7.15.9.tgz"
+  integrity sha512-Ou28A1aZLj5wiFQ3F93aIsrI4NCwn3IJzkkjNo9KLFXsc0Yks+UqrVaFlffHFLsrbajuGRG/OQpnMA1ljayY5Q==
+  dependencies:
+    "@react-navigation/elements" "^2.9.14"
+    color "^4.2.3"
+    sf-symbols-typescript "^2.1.0"
 
 "@react-navigation/core@^7.17.2":
   version "7.17.2"
@@ -4571,7 +4585,7 @@ internal-slot@^1.1.0:
     hasown "^2.0.2"
     side-channel "^1.1.0"
 
-invariant@^2.2.4:
+invariant@2.2.4, invariant@^2.2.4:
   version "2.2.4"
   resolved "https://registry.npmjs.org/invariant/-/invariant-2.2.4.tgz"
   integrity sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==
@@ -6395,6 +6409,14 @@ react-native-vector-icons@^10.3.0:
   dependencies:
     prop-types "^15.7.2"
     yargs "^16.1.1"
+
+react-native-webview@^13.16.1:
+  version "13.16.1"
+  resolved "https://registry.npmjs.org/react-native-webview/-/react-native-webview-13.16.1.tgz"
+  integrity sha512-If0eHhoEdOYDcHsX+xBFwHMbWBGK1BvGDQDQdVkwtSIXiq1uiqjkpWVP2uQ1as94J0CzvFE9PUNDuhiX0Z6ubw==
+  dependencies:
+    escape-string-regexp "^4.0.0"
+    invariant "2.2.4"
 
 react-native-worklets@^0.8.0:
   version "0.8.1"

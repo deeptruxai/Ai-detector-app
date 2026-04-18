@@ -3,7 +3,7 @@ import {
   createNavigationContainerRef,
   StackActions,
 } from '@react-navigation/native';
-import type { RootStackParamList } from './types';
+import type { MainTabParamList, RootStackParamList } from './types';
 
 type RouteName = keyof RootStackParamList;
 
@@ -15,7 +15,7 @@ const isNavigationReady = () => navigationRef.isReady();
  * Navigate to a screen in the root stack.
  * @example
  * navigateTo('Login');
- * navigateTo('VerifyOTP', { email: 'user@example.com' });
+ * navigateTo('VerifyOTP', { phoneNumber: '+15551234567' });
  */
 export const navigateTo = <T extends RouteName>(
   screen: T,
@@ -97,4 +97,28 @@ export const goBack = () => {
   }
 
   navigationRef.goBack();
+};
+
+/**
+ * After sign-in, land on the main tab bar with a specific tab selected.
+ */
+export const resetToMainTab = (tab: keyof MainTabParamList) => {
+  if (!isNavigationReady()) {
+    return;
+  }
+
+  navigationRef.dispatch(
+    CommonActions.reset({
+      index: 0,
+      routes: [
+        {
+          name: 'Main',
+          state: {
+            routes: [{ name: tab }],
+            index: 0,
+          },
+        },
+      ],
+    }),
+  );
 };

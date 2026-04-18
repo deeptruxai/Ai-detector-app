@@ -3,6 +3,7 @@ import { Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { authService } from '@/service/firebase';
 import type { SignupScreenProps } from '@/navigation/types';
+import { resetToMainTab } from '@/navigation/navUtils';
 import { AuthConst } from '@/utils/Constants';
 
 interface SignupErrors {
@@ -22,15 +23,22 @@ interface UseSignupReturn {
   name: string;
   email: string;
   password: string;
+  /** Collected for UI; not sent to auth API yet */
+  phone: string;
   errors: SignupErrors;
   loading: boolean;
+  googleLoading: boolean;
   passwordStrength: PasswordStrength;
 
   // Actions
   setName: (value: string) => void;
   setEmail: (value: string) => void;
   setPassword: (value: string) => void;
+  setPhone: (value: string) => void;
   handleSignup: () => Promise<void>;
+  handleGoogleSignup: () => Promise<void>;
+  openTerms: () => void;
+  openPrivacy: () => void;
   navigateToLogin: () => void;
 }
 
@@ -40,8 +48,10 @@ export const useSignup = (): UseSignupReturn => {
   const [name, setNameState] = useState('');
   const [email, setEmailState] = useState('');
   const [password, setPasswordState] = useState('');
+  const [phone, setPhoneState] = useState('');
   const [errors, setErrors] = useState<SignupErrors>({});
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const passwordStrength = useMemo<PasswordStrength>(
     () => ({
@@ -114,6 +124,10 @@ export const useSignup = (): UseSignupReturn => {
     [errors.password],
   );
 
+  const setPhone = useCallback((value: string) => {
+    setPhoneState(value);
+  }, []);
+
   const handleSignup = useCallback(async () => {
     if (!validateForm()) return;
 
@@ -122,14 +136,36 @@ export const useSignup = (): UseSignupReturn => {
     setLoading(false);
 
     if (response.success) {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Dashboard' }],
-      });
+      resetToMainTab('Dashboard');
     } else {
       Alert.alert(AuthConst.signupFailedTitle, response.error || AuthConst.tryAgainMessage);
     }
-  }, [name, email, password, navigation, validateForm]);
+  }, [name, email, password, validateForm]);
+
+  const handleGoogleSignup = useCallback(async () => {
+    setGoogleLoading(true);
+    const response = await authService.signInWithGoogle();
+    setGoogleLoading(false);
+    if (response.success) {
+      resetToMainTab('Dashboard');
+    } else {
+      Alert.alert(AuthConst.signupFailedTitle, response.error || AuthConst.tryAgainMessage);
+    }
+  }, []);
+
+  const openTerms = useCallback(() => {
+    navigation.navigate('WebView', {
+      title: AuthConst.webViewTermsTitle,
+      uri: AuthConst.termsUrl,
+    });
+  }, [navigation]);
+
+  const openPrivacy = useCallback(() => {
+    navigation.navigate('WebView', {
+      title: AuthConst.webViewPrivacyTitle,
+      uri: AuthConst.privacyUrl,
+    });
+  }, [navigation]);
 
   const navigateToLogin = useCallback(() => {
     navigation.navigate('Login');
@@ -139,13 +175,19 @@ export const useSignup = (): UseSignupReturn => {
     name,
     email,
     password,
+    phone,
     errors,
     loading,
+    googleLoading,
     passwordStrength,
     setName,
     setEmail,
     setPassword,
+    setPhone,
     handleSignup,
+    handleGoogleSignup,
+    openTerms,
+    openPrivacy,
     navigateToLogin,
   };
 };

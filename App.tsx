@@ -1,7 +1,7 @@
 import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
-import { RootNavigator, navigationRef } from '@/navigation';
+import { RootNavigator, navigationRef, linking } from '@/navigation';
 import { ThemeProvider } from '@/core/theme';
 import { ParentComponent } from '@/core/ParentComponent';
 
@@ -9,7 +9,7 @@ function App() {
   return (
     <ThemeProvider theme="primary">
       <SafeAreaProvider>
-        <NavigationContainer ref={navigationRef}>
+        <NavigationContainer ref={navigationRef} linking={linking}>
           <ParentComponent>
             <RootNavigator />
           </ParentComponent>

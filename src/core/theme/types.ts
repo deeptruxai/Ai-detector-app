@@ -38,6 +38,10 @@ export interface ThemeColors {
   appBarBackground: string;
   appBarIcon: string;
   appBarShadow: string;
+
+  splashRadialEdge: string;
+  splashProgressTrack: string;
+  splashBootCaption: string;
 }
 
 export interface Theme {

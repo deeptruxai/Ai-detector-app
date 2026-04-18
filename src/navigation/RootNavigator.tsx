@@ -2,15 +2,14 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Platform } from 'react-native';
 import { RootStackParamList, RootStackScreens } from './types';
+import MainTabNavigator from './MainTabNavigator';
 
 import SplashScreen from '@/screens/Splash';
 import LoginScreen from '@/screens/Auth/Login/Login';
 import SignupScreen from '@/screens/Auth/SignUp/Signup';
+import PhoneAuthScreen from '@/screens/Auth/PhoneAuth/PhoneAuth';
 import VerifyOTPScreen from '@/screens/Auth/VerifyOTP/VerifyOTP';
-import HomeScreen from '@/screens/Home/HomeScreen';
-import ProfileScreen from '@/screens/Profile';
-import SettingsScreen from '@/screens/Settings';
-import DashboardScreen from '@/screens/Dashboard';
+import WebViewScreen from '@/screens/WebView/WebViewScreen';
 import ScanningStatusScreen from '@/screens/Status/ScanningStatus';
 import ImageDetectionScreen from '@/screens/Detection/ImageDetection';
 import TextDetectionScreen from '@/screens/Detection/TextDetection';
@@ -31,11 +30,10 @@ const RootNavigator: React.FC = () => {
       <Stack.Screen name={RootStackScreens.Splash} component={SplashScreen} />
       <Stack.Screen name={RootStackScreens.Login} component={LoginScreen} />
       <Stack.Screen name={RootStackScreens.Signup} component={SignupScreen} />
+      <Stack.Screen name={RootStackScreens.PhoneAuth} component={PhoneAuthScreen} />
       <Stack.Screen name={RootStackScreens.VerifyOTP} component={VerifyOTPScreen} />
-      <Stack.Screen name={RootStackScreens.Home} component={HomeScreen} />
-      <Stack.Screen name={RootStackScreens.Dashboard} component={DashboardScreen} />
-      <Stack.Screen name={RootStackScreens.Profile} component={ProfileScreen} />
-      <Stack.Screen name={RootStackScreens.Settings} component={SettingsScreen} />
+      <Stack.Screen name={RootStackScreens.Main} component={MainTabNavigator} />
+      <Stack.Screen name={RootStackScreens.WebView} component={WebViewScreen} />
       <Stack.Screen name={RootStackScreens.ScanningStatus} component={ScanningStatusScreen} />
       <Stack.Screen name={RootStackScreens.ImageDetection} component={ImageDetectionScreen} />
       <Stack.Screen name={RootStackScreens.TextDetection} component={TextDetectionScreen} />

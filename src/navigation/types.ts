@@ -1,29 +1,56 @@
+import type { NavigatorScreenParams } from '@react-navigation/native';
+import type { CompositeScreenProps } from '@react-navigation/native';
+import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+export type MainTabParamList = {
+  Dashboard: undefined;
+  Home: undefined;
+  Profile: undefined;
+  Settings: undefined;
+};
 
 export type RootStackParamList = {
   Splash: undefined;
   Login: undefined;
   Signup: undefined;
-  VerifyOTP: { email: string };
-  Home: undefined;
-  Dashboard: undefined;
-  Profile: undefined;
-  Settings: undefined;
+  PhoneAuth: undefined;
+  VerifyOTP: { phoneNumber: string };
+  Main: NavigatorScreenParams<MainTabParamList> | undefined;
+  WebView: { title: string; uri: string };
   ScanningStatus: { mode: 'text' | 'image' | 'video' | 'news' };
   ImageDetection: undefined;
   TextDetection: undefined;
 };
 
+type RootStackScreenProps = NativeStackScreenProps<RootStackParamList>;
+
 export type SplashScreenProps = NativeStackScreenProps<RootStackParamList, 'Splash'>;
 export type LoginScreenProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 export type SignupScreenProps = NativeStackScreenProps<RootStackParamList, 'Signup'>;
+export type PhoneAuthScreenProps = NativeStackScreenProps<RootStackParamList, 'PhoneAuth'>;
 export type VerifyOTPScreenProps = NativeStackScreenProps<RootStackParamList, 'VerifyOTP'>;
-export type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
-export type ProfileScreenProps = NativeStackScreenProps<RootStackParamList, 'Profile'>;
-export type SettingsScreenProps = NativeStackScreenProps<RootStackParamList, 'Settings'>;
+export type WebViewScreenProps = NativeStackScreenProps<RootStackParamList, 'WebView'>;
 export type ScanningStatusScreenProps = NativeStackScreenProps<RootStackParamList, 'ScanningStatus'>;
 export type ImageDetectionScreenProps = NativeStackScreenProps<RootStackParamList, 'ImageDetection'>;
 export type TextDetectionScreenProps = NativeStackScreenProps<RootStackParamList, 'TextDetection'>;
+
+export type DashboardScreenProps = CompositeScreenProps<
+  BottomTabScreenProps<MainTabParamList, 'Dashboard'>,
+  RootStackScreenProps
+>;
+export type HomeScreenProps = CompositeScreenProps<
+  BottomTabScreenProps<MainTabParamList, 'Home'>,
+  RootStackScreenProps
+>;
+export type ProfileScreenProps = CompositeScreenProps<
+  BottomTabScreenProps<MainTabParamList, 'Profile'>,
+  RootStackScreenProps
+>;
+export type SettingsScreenProps = CompositeScreenProps<
+  BottomTabScreenProps<MainTabParamList, 'Settings'>,
+  RootStackScreenProps
+>;
 
 declare global {
   namespace ReactNavigation {
@@ -35,11 +62,10 @@ export enum RootStackScreens {
   Splash = 'Splash',
   Login = 'Login',
   Signup = 'Signup',
+  PhoneAuth = 'PhoneAuth',
   VerifyOTP = 'VerifyOTP',
-  Home = 'Home',
-  Dashboard = 'Dashboard',
-  Profile = 'Profile',
-  Settings = 'Settings',
+  Main = 'Main',
+  WebView = 'WebView',
   ScanningStatus = 'ScanningStatus',
   ImageDetection = 'ImageDetection',
   TextDetection = 'TextDetection',
