@@ -1,5 +1,6 @@
 import { Tag } from '@/core/types/loggerTags';
 import { getBaseUrl } from '@/utils/env';
+import { ApiConst } from '@/utils/Constants';
 import logger from '@/utils/logger';
 import networkService from '@/utils/network';
 import axios, { AxiosError } from 'axios';
@@ -27,7 +28,7 @@ axiosInstance.interceptors.request.use(
     if (!networkService.getConnectionStatus()) {
       return Promise.reject({
         code: '401',
-        message: 'No internet connection',
+        message: ApiConst.noInternetConnection,
       });
     }
     logger.log(Tag.API, '🔍 Final Axios Request Config:', {

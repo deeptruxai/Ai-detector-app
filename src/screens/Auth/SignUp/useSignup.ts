@@ -3,6 +3,7 @@ import { Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { authService } from '@/service/firebase';
 import type { SignupScreenProps } from '@/navigation/types';
+import { AuthConst } from '@/utils/Constants';
 
 interface SignupErrors {
   name?: string;
@@ -60,23 +61,23 @@ export const useSignup = (): UseSignupReturn => {
     const newErrors: SignupErrors = {};
 
     if (!name.trim()) {
-      newErrors.name = 'Full name is required';
+      newErrors.name = AuthConst.fullNameRequiredError;
     }
 
     if (!email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = AuthConst.emailRequiredError;
     } else if (!validateEmail(email)) {
-      newErrors.email = 'Please enter a valid email';
+      newErrors.email = AuthConst.validEmailError;
     }
 
     if (!password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = AuthConst.passwordRequiredError;
     } else if (!passwordStrength.hasMinLength) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = AuthConst.passwordMinLengthError;
     } else if (!passwordStrength.hasUppercase) {
-      newErrors.password = 'Password must contain at least one uppercase letter';
+      newErrors.password = AuthConst.passwordUppercaseError;
     } else if (!passwordStrength.hasNumber) {
-      newErrors.password = 'Password must contain at least one number';
+      newErrors.password = AuthConst.passwordNumberError;
     }
 
     setErrors(newErrors);
@@ -126,7 +127,7 @@ export const useSignup = (): UseSignupReturn => {
         routes: [{ name: 'Dashboard' }],
       });
     } else {
-      Alert.alert('Signup Failed', response.error || 'Please try again.');
+      Alert.alert(AuthConst.signupFailedTitle, response.error || AuthConst.tryAgainMessage);
     }
   }, [name, email, password, navigation, validateForm]);
 

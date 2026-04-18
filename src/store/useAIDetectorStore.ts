@@ -17,12 +17,16 @@ export interface DetectionResult {
   analyzedAt: Date;
 }
 
+/** Key–value map; use `SharedPreference` helpers for imperative access. */
+export type SharedPrefValue = unknown;
+
 interface AIDetectorState {
   // State
   status: DetectionStatus;
   currentResult: DetectionResult | null;
   history: DetectionResult[];
   error: string | null;
+  prefs: Record<string, SharedPrefValue>;
 
   // Actions
   setStatus: (status: DetectionStatus) => void;
@@ -31,17 +35,39 @@ interface AIDetectorState {
   clearHistory: () => void;
   setError: (error: string | null) => void;
   reset: () => void;
+
+  getPref: (key: string) => SharedPrefValue;
+  setPref: (key: string, value: SharedPrefValue) => void;
+  removePref: (key: string) => void;
+  clearPrefs: () => void;
 }
 
-export const useAIDetectorStore = create<AIDetectorState>(set => ({
+export const useAIDetectorStore = create<AIDetectorState>((set, get) => ({
   // Initial state
   status: 'idle',
   currentResult: null,
   history: [],
   error: null,
+  prefs: {},
 
   // Actions
   setStatus: (status: DetectionStatus) => set({ status }),
+
+  getPref: key => get().prefs[key],
+
+  setPref: (key, value) =>
+    set(state => ({
+      prefs: { ...state.prefs, [key]: value },
+    })),
+
+  removePref: key =>
+    set(state => {
+      const next = { ...state.prefs };
+      delete next[key];
+      return { prefs: next };
+    }),
+
+  clearPrefs: () => set({ prefs: {} }),
 
   setResult: (result: DetectionResult) =>
     set(state => ({

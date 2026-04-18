@@ -19,6 +19,7 @@ import { useAIDetectorStore } from '@/store';
 import { authService } from '@/service/firebase';
 import { useTheme } from '@/core/theme';
 import type { HomeScreenProps } from '@/navigation/types';
+import { CommonConst, DashboardConst, StatusConst } from '@/utils/Constants';
 
 export const DashboardScreen: React.FC = () => {
   const navigation = useNavigation<HomeScreenProps['navigation']>();
@@ -46,7 +47,7 @@ export const DashboardScreen: React.FC = () => {
       aiProbability: Math.round(aiScore),
       humanProbability: Math.round(100 - aiScore),
       label: (aiScore > 60 ? 'AI' : aiScore > 40 ? 'Mixed' : 'Human') as 'AI' | 'Human' | 'Mixed',
-      confidence: (aiScore > 80 || aiScore < 20 ? 'High' : aiScore > 65 || aiScore < 35 ? 'Medium' : 'Low') as 'High' | 'Medium' | 'Low',
+      confidence: (aiScore > 80 || aiScore < 20 ? StatusConst.confidenceValue : aiScore > 65 || aiScore < 35 ? 'Medium' : 'Low') as 'High' | 'Medium' | 'Low',
       analyzedAt: new Date(),
     };
 
@@ -75,16 +76,16 @@ export const DashboardScreen: React.FC = () => {
         <View style={styles.header}>
           <View>
             <Text size="xxl" style={[styles.title, { color: theme.colors.text }]}>
-              AI Detector
+              {DashboardConst.appTitle}
             </Text>
             <Text size="sm" style={{ color: theme.colors.textSecondary }}>
-              {user?.email || 'Guest'}
+              {user?.email || DashboardConst.guestUser}
             </Text>
           </View>
           <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
             <View style={[styles.avatar, { backgroundColor: theme.colors.primary }]}>
               <Text style={{ color: theme.colors.onPrimary, fontWeight: 'bold' }}>
-                {user?.email?.charAt(0).toUpperCase() || 'U'}
+                {user?.email?.charAt(0).toUpperCase() || CommonConst.unknownUserInitial}
               </Text>
             </View>
           </TouchableOpacity>
@@ -93,27 +94,27 @@ export const DashboardScreen: React.FC = () => {
         {/* Input Area */}
         <View style={[styles.inputCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
           <Text size="sm" style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>
-            Paste text to analyze
+            {DashboardConst.inputLabel}
           </Text>
           <TextInput
             style={[styles.textInput, { color: theme.colors.text }]}
             multiline
             numberOfLines={8}
-            placeholder="Enter or paste the text you want to check..."
+            placeholder={DashboardConst.inputPlaceholder}
             placeholderTextColor={theme.colors.textDisabled}
             value={inputText}
             onChangeText={setInputText}
             textAlignVertical="top"
           />
           <Text size="xs" style={{ color: theme.colors.textDisabled, textAlign: 'right', marginTop: 4 }}>
-            {inputText.length} characters
+            {inputText.length} {DashboardConst.characterCountSuffix}
           </Text>
         </View>
 
         {/* Action Buttons */}
         <View style={styles.actions}>
           <PrimaryButton
-            title={status === 'analyzing' ? 'Analyzing...' : 'Analyze Text'}
+            title={status === 'analyzing' ? DashboardConst.analyzingButton : DashboardConst.analyzeButton}
             onPress={handleAnalyze}
             loading={status === 'analyzing'}
             disabled={!inputText.trim() || status === 'analyzing'}
@@ -122,7 +123,7 @@ export const DashboardScreen: React.FC = () => {
           />
           {(inputText || currentResult) && (
             <PrimaryButton
-              title="Clear"
+              title={DashboardConst.clearButton}
               onPress={handleClear}
               variant="ghost"
               fullWidth
@@ -138,11 +139,11 @@ export const DashboardScreen: React.FC = () => {
             <View style={styles.resultHeader}>
               <View style={[styles.labelBadge, { backgroundColor: getResultColor() }]}>
                 <Text size="sm" style={{ color: '#FFF', fontWeight: 'bold' }}>
-                  {currentResult.label} Content
+                  {currentResult.label} {DashboardConst.contentSuffix}
                 </Text>
               </View>
               <Text size="sm" style={{ color: theme.colors.textSecondary }}>
-                {currentResult.confidence} Confidence
+                {currentResult.confidence} {DashboardConst.confidenceSuffix}
               </Text>
             </View>
 
@@ -152,7 +153,7 @@ export const DashboardScreen: React.FC = () => {
                   {currentResult.aiProbability}%
                 </Text>
                 <Text size="sm" style={{ color: theme.colors.textSecondary }}>
-                  AI Generated
+                  {DashboardConst.aiGeneratedLabel}
                 </Text>
               </View>
               <View style={styles.divider} />
@@ -161,7 +162,7 @@ export const DashboardScreen: React.FC = () => {
                   {currentResult.humanProbability}%
                 </Text>
                 <Text size="sm" style={{ color: theme.colors.textSecondary }}>
-                  Human Written
+                  {DashboardConst.humanWrittenLabel}
                 </Text>
               </View>
             </View>
@@ -185,7 +186,7 @@ export const DashboardScreen: React.FC = () => {
         {history.length > 1 && (
           <View style={styles.historySection}>
             <Text size="lg" style={[styles.sectionTitle, { color: theme.colors.text }]}>
-              Recent Analyses
+              {DashboardConst.recentAnalysesTitle}
             </Text>
             {history.slice(1, 4).map(item => (
               <View key={item.id} style={[styles.historyItem, { backgroundColor: theme.colors.surface, borderColor: theme.colors.borderLight }]}>

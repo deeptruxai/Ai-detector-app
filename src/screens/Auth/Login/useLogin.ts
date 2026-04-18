@@ -2,7 +2,9 @@ import { useState, useCallback } from 'react';
 import { Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { authService } from '@/service/firebase';
-import type { LoginScreenProps } from '@/navigation/types';
+import { RootStackScreens, type LoginScreenProps } from '@/navigation/types';
+import { AuthConst } from '@/utils/Constants';
+import { resetNavigation } from '@/navigation';
 
 interface LoginErrors {
   email?: string;
@@ -25,7 +27,6 @@ interface UseLoginReturn {
 }
 
 export const useLogin = (): UseLoginReturn => {
-  const navigation = useNavigation<LoginScreenProps['navigation']>();
 
   const [email, setEmailState] = useState('');
   const [password, setPasswordState] = useState('');
@@ -41,15 +42,15 @@ export const useLogin = (): UseLoginReturn => {
     const newErrors: LoginErrors = {};
 
     if (!email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = AuthConst.emailRequiredError;
     } else if (!validateEmail(email)) {
-      newErrors.email = 'Please enter a valid email';
+      newErrors.email = AuthConst.validEmailError;
     }
 
     if (!password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = AuthConst.passwordRequiredError;
     } else if (password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = AuthConst.passwordMinLengthError;
     }
 
     setErrors(newErrors);
@@ -84,22 +85,19 @@ export const useLogin = (): UseLoginReturn => {
     setLoading(false);
 
     if (response.success) {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Dashboard' }],
-      });
+      resetNavigation(RootStackScreens.Dashboard);
     } else {
-      Alert.alert('Login Failed', response.error || 'Please try again.');
+      Alert.alert(AuthConst.loginFailedTitle, response.error || AuthConst.tryAgainMessage);
     }
-  }, [email, password, navigation, validateForm]);
+  }, [email, password, validateForm]);
 
   const handleForgotPassword = useCallback(async () => {
     if (!email.trim()) {
-      setErrors(prev => ({ ...prev, email: 'Enter your email to reset password' }));
+      setErrors(prev => ({ ...prev, email: AuthConst.resetEmailRequired }));
       return;
     }
     if (!validateEmail(email)) {
-      setErrors(prev => ({ ...prev, email: 'Please enter a valid email' }));
+      setErrors(prev => ({ ...prev, email: AuthConst.validEmailError }));
       return;
     }
 
@@ -108,15 +106,15 @@ export const useLogin = (): UseLoginReturn => {
     setLoading(false);
 
     if (response.success) {
-      Alert.alert('Email Sent', 'Check your inbox for password reset instructions.');
+      Alert.alert(AuthConst.resetEmailSentTitle, AuthConst.resetEmailSentMessage);
     } else {
-      Alert.alert('Error', response.error || 'Failed to send reset email.');
+      Alert.alert(AuthConst.genericErrorTitle, response.error || AuthConst.resetEmailFailedMessage);
     }
   }, [email, validateEmail]);
 
   const navigateToSignup = useCallback(() => {
-    navigation.navigate('Signup');
-  }, [navigation]);
+    resetNavigation(RootStackScreens.Signup);
+  }, []);
 
   return {
     email,

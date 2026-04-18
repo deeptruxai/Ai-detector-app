@@ -4,6 +4,7 @@ import { Button } from '@/components/Button';
 import { Text, SafeScreen } from '@/core/components';
 import { Theme, useTheme } from '@/core/theme';
 import { ImageDetectionScreenProps } from '@/navigation/types';
+import { CommonConst, DetectionConst } from '@/utils/Constants';
 
 const ImageDetectionScreen: React.FC<ImageDetectionScreenProps> = ({ navigation }) => {
   const { theme } = useTheme();
@@ -18,30 +19,30 @@ const ImageDetectionScreen: React.FC<ImageDetectionScreenProps> = ({ navigation 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-             <Text style={styles.backText}>←</Text>
+             <Text style={styles.backText}>{CommonConst.backArrow}</Text>
           </TouchableOpacity>
           <Text size="xxl" style={styles.title}>
-            Image Detection
+            {DetectionConst.imageScreenTitle}
           </Text>
         </View>
 
         <View style={styles.uploadContainer}>
           <View style={[styles.uploadBox, { borderColor: theme.colors.primary, borderStyle: 'dashed' }]}>
-            <Text style={styles.uploadIcon}>📷</Text>
-            <Text style={styles.uploadTitle}>Upload Image</Text>
-            <Text style={styles.uploadSubtitle}>Supports JGP, PNG, HEIC</Text>
+            <Text style={styles.uploadIcon}>{DetectionConst.uploadIcon}</Text>
+            <Text style={styles.uploadTitle}>{DetectionConst.uploadTitle}</Text>
+            <Text style={styles.uploadSubtitle}>{DetectionConst.uploadSubtitle}</Text>
           </View>
         </View>
 
         <View style={styles.instructions}>
-          <Text style={styles.instructionTitle}>Guidelines</Text>
-          <Text style={styles.instructionItem}>1. Ensure clear resolution</Text>
-          <Text style={styles.instructionItem}>2. No heavy filters</Text>
-          <Text style={styles.instructionItem}>3. Maximum size 10MB</Text>
+          <Text style={styles.instructionTitle}>{DetectionConst.guidelinesTitle}</Text>
+          <Text style={styles.instructionItem}>{DetectionConst.imageGuidelineOne}</Text>
+          <Text style={styles.instructionItem}>{DetectionConst.imageGuidelineTwo}</Text>
+          <Text style={styles.instructionItem}>{DetectionConst.imageGuidelineThree}</Text>
         </View>
 
         <Button
-          title="Start AI Scan"
+          title={DetectionConst.startAiScanButton}
           variant="primary"
           onPress={handleScan}
           style={styles.scanButton}

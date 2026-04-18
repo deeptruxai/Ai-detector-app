@@ -23,7 +23,7 @@ const RootNavigator: React.FC = () => {
       initialRouteName={RootStackScreens.Splash}
       screenOptions={{
         headerShown: false,
-        animation: Platform.OS === 'android' ? 'simple_push' : 'slide_from_right',
+        animation: Platform.OS === 'android' ? 'default' : 'slide_from_right',
         freezeOnBlur: true,
         fullScreenGestureEnabled: true,
         gestureEnabled: true,

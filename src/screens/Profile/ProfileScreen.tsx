@@ -13,6 +13,7 @@ import { Text, SafeScreen } from '@/core/components';
 import { authService } from '@/service/firebase';
 import { Theme, useTheme } from '@/core/theme';
 import type { ProfileScreenProps } from '@/navigation/types';
+import { CommonConst, ProfileConst } from '@/utils/Constants';
 
 const ProfileScreen: React.FC = () => {
   const navigation = useNavigation<ProfileScreenProps['navigation']>();
@@ -21,10 +22,10 @@ const ProfileScreen: React.FC = () => {
   const user = authService.currentUser;
 
   const handleLogout = () => {
-    Alert.alert('Logout', 'Are you sure you want to logout?', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(ProfileConst.logoutAlertTitle, ProfileConst.logoutAlertMessage, [
+      { text: ProfileConst.cancelButton, style: 'cancel' },
       {
-        text: 'Logout',
+        text: ProfileConst.logoutButton,
         style: 'destructive',
         onPress: async () => {
           const response = await authService.signOut();
@@ -39,46 +40,41 @@ const ProfileScreen: React.FC = () => {
     ]);
   };
 
-  const menuItems = [
-    { label: 'Edit Profile', icon: '👤' },
-    { label: 'Security Settings', icon: '🔒' },
-    { label: 'Detection History', icon: '📜' },
-    { label: 'Support Center', icon: '🎧' },
-  ];
+  const menuItems = ProfileConst.menuItems;
 
   return (
     <SafeScreen style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-             <Text style={styles.backText}>←</Text>
+             <Text style={styles.backText}>{CommonConst.backArrow}</Text>
           </TouchableOpacity>
-          <Text size="xxl" style={styles.title}>Profile</Text>
+          <Text size="xxl" style={styles.title}>{ProfileConst.title}</Text>
         </View>
 
         <View style={styles.profileInfo}>
           <View style={[styles.avatar, { borderColor: theme.colors.primary }]}>
             <Text style={styles.avatarText}>
-              {user?.email?.charAt(0).toUpperCase() || 'U'}
+              {user?.email?.charAt(0).toUpperCase() || CommonConst.unknownUserInitial}
             </Text>
           </View>
-          <Text size="xl" style={styles.name}>{user?.displayName || 'AIDetector Guardian'}</Text>
-          <Text style={styles.email}>{user?.email || 'guardian@aidetect.io'}</Text>
+          <Text size="xl" style={styles.name}>{user?.displayName || ProfileConst.fallbackName}</Text>
+          <Text style={styles.email}>{user?.email || ProfileConst.fallbackEmail}</Text>
           
           <Card variant="glass" style={styles.proBadge} padding="sm">
-            <Text style={styles.proText}>✨ PRO ACCOUNT</Text>
+            <Text style={styles.proText}>{ProfileConst.proAccountLabel}</Text>
           </Card>
         </View>
 
         <View style={styles.statsRow}>
           <View style={styles.statBox}>
-            <Text style={styles.statValue}>128</Text>
-            <Text style={styles.statLabel}>Total Scans</Text>
+            <Text style={styles.statValue}>{ProfileConst.totalScansValue}</Text>
+            <Text style={styles.statLabel}>{ProfileConst.totalScansLabel}</Text>
           </View>
           <View style={styles.statDivider} />
           <View style={styles.statBox}>
-            <Text style={styles.statValue}>99.2%</Text>
-            <Text style={styles.statLabel}>Accuracy</Text>
+            <Text style={styles.statValue}>{ProfileConst.accuracyValue}</Text>
+            <Text style={styles.statLabel}>{ProfileConst.accuracyLabel}</Text>
           </View>
         </View>
 
@@ -89,20 +85,20 @@ const ProfileScreen: React.FC = () => {
                   <Text style={styles.menuIcon}>{item.icon}</Text>
                   <Text style={styles.menuLabel}>{item.label}</Text>
                 </View>
-                <Text style={styles.menuArrow}>›</Text>
+                <Text style={styles.menuArrow}>{CommonConst.nextArrow}</Text>
              </TouchableOpacity>
           ))}
         </View>
 
         <Button
-          title="Sign Out"
+          title={ProfileConst.signOutButton}
           variant="outline"
           onPress={handleLogout}
           style={styles.logoutButton}
           textStyle={{ color: theme.colors.error }}
         />
         
-        <Text style={styles.version}>Version 2.4.0 (Emerald Cipher)</Text>
+        <Text style={styles.version}>{ProfileConst.version}</Text>
       </ScrollView>
     </SafeScreen>
   );

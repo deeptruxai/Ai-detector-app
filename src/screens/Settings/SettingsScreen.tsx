@@ -9,13 +9,14 @@ import {
 } from 'react-native';
 import { Text, SafeScreen } from '@/core/components';
 import { useTheme } from '@/core/theme';
+import { CommonConst, SettingsConst } from '@/utils/Constants';
 
 export const SettingsScreen: React.FC = () => {
   const { theme } = useTheme();
   const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
 
   const handleExportData = () => {
-    Alert.alert('Export Data', 'CSV export will be available soon!');
+    Alert.alert(SettingsConst.exportDataTitle, SettingsConst.exportDataMessage);
   };
 
   return (
@@ -24,23 +25,23 @@ export const SettingsScreen: React.FC = () => {
         {/* Header */}
         <View style={[styles.header, { backgroundColor: theme.colors.surface, borderBottomColor: theme.colors.border }]}>
           <Text size="xxl" style={[styles.title, { color: theme.colors.text }]}>
-            Settings
+            {SettingsConst.title}
           </Text>
         </View>
 
         {/* Notifications Section */}
         <View style={styles.section}>
           <Text size="sm" style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>
-            Notifications
+            {SettingsConst.notificationsSection}
           </Text>
 
           <View style={[styles.settingRow, { backgroundColor: theme.colors.surface, borderBottomColor: theme.colors.borderLight }]}>
             <View style={{ flex: 1 }}>
               <Text size="md" style={{ color: theme.colors.text }}>
-                Push Notifications
+                {SettingsConst.pushNotificationsTitle}
               </Text>
               <Text size="xs" style={{ color: theme.colors.textSecondary, marginTop: 2 }}>
-                Receive alerts for analysis completion
+                {SettingsConst.pushNotificationsSubtitle}
               </Text>
             </View>
             <Switch
@@ -55,7 +56,7 @@ export const SettingsScreen: React.FC = () => {
         {/* Data Section */}
         <View style={styles.section}>
           <Text size="sm" style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>
-            Data
+            {SettingsConst.dataSection}
           </Text>
 
           <TouchableOpacity
@@ -63,51 +64,51 @@ export const SettingsScreen: React.FC = () => {
             onPress={handleExportData}>
             <View>
               <Text size="md" style={{ color: theme.colors.text }}>
-                Export History
+                {SettingsConst.exportHistoryTitle}
               </Text>
               <Text size="xs" style={{ color: theme.colors.textSecondary, marginTop: 2 }}>
-                Download your analysis history as CSV
+                {SettingsConst.exportHistorySubtitle}
               </Text>
             </View>
-            <Text style={{ fontSize: 20, color: theme.colors.textDisabled }}>›</Text>
+            <Text style={{ fontSize: 20, color: theme.colors.textDisabled }}>{CommonConst.nextArrow}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={[styles.settingRow, { backgroundColor: theme.colors.surface, borderBottomColor: theme.colors.borderLight }]}
-            onPress={() => Alert.alert('Clear History', 'History cleared!')}>
+            onPress={() => Alert.alert(SettingsConst.clearHistoryTitle, SettingsConst.clearHistoryMessage)}>
             <View>
               <Text size="md" style={{ color: theme.colors.error }}>
-                Clear History
+                {SettingsConst.clearHistoryRowTitle}
               </Text>
               <Text size="xs" style={{ color: theme.colors.textSecondary, marginTop: 2 }}>
-                Delete all past analyses
+                {SettingsConst.clearHistoryRowSubtitle}
               </Text>
             </View>
-            <Text style={{ fontSize: 20, color: theme.colors.textDisabled }}>›</Text>
+            <Text style={{ fontSize: 20, color: theme.colors.textDisabled }}>{CommonConst.nextArrow}</Text>
           </TouchableOpacity>
         </View>
 
         {/* About Section */}
         <View style={styles.section}>
           <Text size="sm" style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>
-            About
+            {SettingsConst.aboutSection}
           </Text>
 
           <View style={[styles.settingRow, { backgroundColor: theme.colors.surface, borderBottomColor: theme.colors.borderLight }]}>
             <Text size="md" style={{ color: theme.colors.text }}>
-              Version
+              {SettingsConst.versionLabel}
             </Text>
             <Text size="md" style={{ color: theme.colors.textSecondary }}>
-              1.0.0
+              {SettingsConst.versionValue}
             </Text>
           </View>
 
           <View style={[styles.settingRow, { backgroundColor: theme.colors.surface }]}>
             <Text size="md" style={{ color: theme.colors.text }}>
-              Made with
+              {SettingsConst.madeWithLabel}
             </Text>
             <Text size="md" style={{ color: theme.colors.textSecondary }}>
-              ❤️ AI Detector
+              {SettingsConst.madeWithValue}
             </Text>
           </View>
         </View>

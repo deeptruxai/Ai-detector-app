@@ -12,6 +12,7 @@ import { Button } from '@/components/Button';
 import { Text, SafeScreen } from '@/core/components';
 import { Theme, useTheme } from '@/core/theme';
 import { VerifyOTPScreenProps } from '@/navigation/types';
+import { AuthConst } from '@/utils/Constants';
 
 const VerifyOTPScreen: React.FC<VerifyOTPScreenProps> = ({ route, navigation }) => {
   const { email } = route.params;
@@ -54,10 +55,10 @@ const VerifyOTPScreen: React.FC<VerifyOTPScreenProps> = ({ route, navigation }) 
           
           <View style={styles.header}>
             <Text size="xxxl" style={styles.title}>
-              Verify OTP
+              {AuthConst.verifyOtpTitle}
             </Text>
             <Text size="md" style={styles.subtitle}>
-              We've sent a code to
+              {AuthConst.verifyOtpSubtitle}
             </Text>
             <Text size="md" style={styles.email}>
               {email}
@@ -88,15 +89,15 @@ const VerifyOTPScreen: React.FC<VerifyOTPScreenProps> = ({ route, navigation }) 
           </View>
 
           <Button
-            title="Verify Code"
+            title={AuthConst.verifyOtpButton}
             onPress={handleVerify}
             style={styles.verifyButton}
           />
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Didn't receive code? </Text>
+            <Text style={styles.footerText}>{AuthConst.otpResendPrefix}</Text>
             <TouchableOpacity onPress={() => {}}>
-              <Text style={styles.resendLink}>Resend now</Text>
+              <Text style={styles.resendLink}>{AuthConst.otpResendCta}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

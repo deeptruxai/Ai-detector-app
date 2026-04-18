@@ -11,6 +11,7 @@ import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { Text, SafeScreen } from '@/core/components';
 import { Theme, useTheme } from '@/core/theme';
+import { AuthConst } from '@/utils/Constants';
 import { useLogin } from './useLogin';
 
 const LoginScreen: React.FC = () => {
@@ -40,16 +41,16 @@ const LoginScreen: React.FC = () => {
           
           <View style={styles.header}>
             <Text size="xxxl" style={styles.title}>
-              Sign In
+              {AuthConst.loginTitle}
             </Text>
             <Text size="md" style={styles.subtitle}>
-              High-precision AI network
+              {AuthConst.loginSubtitle}
             </Text>
           </View>
 
           <View style={styles.form}>
             <Button
-              title="Continue with Google"
+              title={AuthConst.continueWithGoogle}
               variant="secondary"
               onPress={() => {}} // Placeholder for Google Sign In
               style={styles.googleButton}
@@ -58,13 +59,13 @@ const LoginScreen: React.FC = () => {
 
             <View style={styles.dividerContainer}>
               <View style={styles.divider} />
-              <Text style={styles.dividerText}>OR</Text>
+              <Text style={styles.dividerText}>{AuthConst.dividerOr}</Text>
               <View style={styles.divider} />
             </View>
 
             <Input
-              label="Email Address"
-              placeholder="Enter your email"
+              label={AuthConst.emailLabel}
+              placeholder={AuthConst.emailPlaceholder}
               value={email}
               onChangeText={setEmail}
               error={errors.email}
@@ -74,8 +75,8 @@ const LoginScreen: React.FC = () => {
             />
 
             <Input
-              label="Password"
-              placeholder="••••••••"
+              label={AuthConst.passwordLabel}
+              placeholder={AuthConst.passwordPlaceholder}
               value={password}
               onChangeText={setPassword}
               error={errors.password}
@@ -84,7 +85,7 @@ const LoginScreen: React.FC = () => {
             />
 
             <Button
-              title="Sign In"
+              title={AuthConst.signInButton}
               variant="primary"
               onPress={handleLogin}
               loading={loading}
@@ -93,9 +94,9 @@ const LoginScreen: React.FC = () => {
           </View>
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>New to AIDetect? </Text>
+            <Text style={styles.footerText}>{AuthConst.loginFooterPrefix}</Text>
             <TouchableOpacity onPress={navigateToSignup}>
-              <Text style={styles.signupLink}>Register now</Text>
+              <Text style={styles.signupLink}>{AuthConst.loginFooterCta}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

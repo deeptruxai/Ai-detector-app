@@ -3,6 +3,7 @@ import { StyleSheet, View, Animated, Easing } from 'react-native';
 import { Text, SafeScreen } from '@/core/components';
 import { Theme, useTheme } from '@/core/theme';
 import { ScanningStatusScreenProps } from '@/navigation/types';
+import { StatusConst } from '@/utils/Constants';
 
 const ScanningStatusScreen: React.FC<ScanningStatusScreenProps> = ({ route, navigation }) => {
   const { mode } = route.params;
@@ -49,10 +50,10 @@ const ScanningStatusScreen: React.FC<ScanningStatusScreenProps> = ({ route, navi
     <SafeScreen style={styles.container}>
       <View style={styles.content}>
         <Text size="xxxl" style={styles.title}>
-          Scanning {mode}...
+          {StatusConst.scanningPrefix} {mode}{StatusConst.scanningSuffix}
         </Text>
         <Text size="md" style={styles.subtitle}>
-          AI pattern matching in progress
+          {StatusConst.scanningSubtitle}
         </Text>
 
         <View style={styles.progressContainer}>
@@ -69,12 +70,12 @@ const ScanningStatusScreen: React.FC<ScanningStatusScreenProps> = ({ route, navi
 
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
-            <Text style={styles.statLabel}>Confidence</Text>
-            <Text style={styles.statValue}>High</Text>
+            <Text style={styles.statLabel}>{StatusConst.confidenceLabel}</Text>
+            <Text style={styles.statValue}>{StatusConst.confidenceValue}</Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={styles.statLabel}>Security</Text>
-            <Text style={styles.statValue}>V3.2</Text>
+            <Text style={styles.statLabel}>{StatusConst.securityLabel}</Text>
+            <Text style={styles.statValue}>{StatusConst.securityValue}</Text>
           </View>
         </View>
       </View>
@@ -132,10 +133,10 @@ const ScanningStatusScreenCorrect: React.FC<ScanningStatusScreenProps> = ({ rout
      <SafeScreen style={styles.container}>
       <View style={styles.content}>
         <Text size="xxxl" style={styles.title}>
-          Scanning {mode}...
+          {StatusConst.scanningPrefix} {mode}{StatusConst.scanningSuffix}
         </Text>
         <Text size="md" style={styles.subtitle}>
-          AI pattern matching in progress
+          {StatusConst.scanningSubtitle}
         </Text>
 
         <View style={styles.progressContainer}>
@@ -152,12 +153,12 @@ const ScanningStatusScreenCorrect: React.FC<ScanningStatusScreenProps> = ({ rout
 
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
-            <Text style={styles.statLabel}>Confidence</Text>
-            <Text style={styles.statValue}>High</Text>
+            <Text style={styles.statLabel}>{StatusConst.confidenceLabel}</Text>
+            <Text style={styles.statValue}>{StatusConst.confidenceValue}</Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={styles.statLabel}>Security</Text>
-            <Text style={styles.statValue}>V3.2</Text>
+            <Text style={styles.statLabel}>{StatusConst.securityLabel}</Text>
+            <Text style={styles.statValue}>{StatusConst.securityValue}</Text>
           </View>
         </View>
       </View>

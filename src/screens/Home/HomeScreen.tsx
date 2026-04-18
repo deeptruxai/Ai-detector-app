@@ -6,6 +6,7 @@ import { Text, SafeScreen } from '@/core/components';
 import { Theme, useTheme } from '@/core/theme';
 import { authService } from '@/service/firebase';
 import type { HomeScreenProps } from '@/navigation/types';
+import { HomeConst, CommonConst } from '@/utils/Constants';
 
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation<HomeScreenProps['navigation']>();
@@ -16,34 +17,34 @@ const HomeScreen: React.FC = () => {
   const modes = [
     {
       id: 'text',
-      title: 'Text Detection',
-      description: 'Analyze documents, emails, and articles for AI patterns.',
-      icon: '📄',
+      title: HomeConst.textModeTitle,
+      description: HomeConst.textModeDescription,
+      icon: HomeConst.textModeIcon,
       route: 'TextDetection',
       accent: theme.colors.primary,
     },
     {
       id: 'image',
-      title: 'Image Detection',
-      description: 'Identify AI-generated images and deepfake visuals.',
-      icon: '📷',
+      title: HomeConst.imageModeTitle,
+      description: HomeConst.imageModeDescription,
+      icon: HomeConst.imageModeIcon,
       route: 'ImageDetection',
       accent: theme.colors.secondary,
     },
     {
       id: 'video',
-      title: 'Video Analysis',
-      description: 'Scan videos for synthetic manipulation and deepfakes.',
-      icon: '🎥',
+      title: HomeConst.videoModeTitle,
+      description: HomeConst.videoModeDescription,
+      icon: HomeConst.videoModeIcon,
       route: 'ScanningStatus',
       params: { mode: 'video' },
       accent: '#8B5CF6',
     },
     {
       id: 'news',
-      title: 'News Verify',
-      description: 'Check news credibility and identify bot-generated reports.',
-      icon: '🌐',
+      title: HomeConst.newsModeTitle,
+      description: HomeConst.newsModeDescription,
+      icon: HomeConst.newsModeIcon,
       route: 'ScanningStatus',
       params: { mode: 'news' },
       accent: '#3B82F6',
@@ -56,13 +57,13 @@ const HomeScreen: React.FC = () => {
         <View style={styles.header}>
           <View>
             <Text size="xxl" style={styles.greeting}>
-              Hello, {user?.displayName || 'Guardian'}
+              Hello, {user?.displayName || HomeConst.fallbackUserName}
             </Text>
-            <Text style={styles.headerSubtitle}>Ready to verify today?</Text>
+            <Text style={styles.headerSubtitle}>{HomeConst.headerSubtitle}</Text>
           </View>
           <TouchableOpacity onPress={() => navigation.navigate('Profile')} style={styles.profileToggle}>
             <View style={[styles.avatar, { borderColor: theme.colors.primary }]}>
-               <Text style={styles.avatarText}>{user?.email?.charAt(0).toUpperCase() || 'U'}</Text>
+               <Text style={styles.avatarText}>{user?.email?.charAt(0).toUpperCase() || CommonConst.unknownUserInitial}</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -71,17 +72,17 @@ const HomeScreen: React.FC = () => {
           <Card variant="glass" style={styles.badgeCard} padding="sm">
             <View style={styles.badgeContent}>
               <View style={[styles.badgeIcon, { backgroundColor: theme.colors.primary }]}>
-                <Text>🛡️</Text>
+                <Text>{HomeConst.badgeIcon}</Text>
               </View>
               <View>
-                <Text style={styles.badgeTitle}>Pro Account Active</Text>
-                <Text style={styles.badgeSubtitle}>Unrestricted High-Precision Scans</Text>
+                <Text style={styles.badgeTitle}>{HomeConst.badgeTitle}</Text>
+                <Text style={styles.badgeSubtitle}>{HomeConst.badgeSubtitle}</Text>
               </View>
             </View>
           </Card>
         </View>
 
-        <Text size="lg" style={styles.sectionTitle}>Verification Modes</Text>
+        <Text size="lg" style={styles.sectionTitle}>{HomeConst.sectionTitle}</Text>
         
         <View style={styles.modesGrid}>
           {modes.map((mode) => (

@@ -1,10 +1,9 @@
 import React, { useEffect, useMemo } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { Text, SafeScreen } from '@/core/components';
 import { Theme, useTheme } from '@/core/theme';
 import { authService } from '@/service/firebase';
-import type { SplashScreenProps } from '@/navigation/types';
+import { resetNavigation } from '@/navigation/navUtils';
 import Animated, {
   Easing,
   interpolate,
@@ -14,6 +13,8 @@ import Animated, {
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
+import { RootStackScreens } from '@/navigation';
+import { SplashConst } from '@/utils/Constants';
 
 const SHIELD_LOGO_URL =
   'https://www.figma.com/api/mcp/asset/9e43a6d2-79e9-49e2-96d1-2b620b9b38be';
@@ -21,7 +22,6 @@ const STATUS_ICON_URL =
   'https://www.figma.com/api/mcp/asset/c98a683a-554a-4b78-935e-96b3a01b009a';
 
 const SplashScreen: React.FC = () => {
-  const navigation = useNavigation<SplashScreenProps['navigation']>();
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -64,15 +64,15 @@ const SplashScreen: React.FC = () => {
     const checkAuthAndNavigate = () => {
       const isLoggedIn = authService.isLoggedIn;
       if (isLoggedIn) {
-        navigation.replace('Dashboard');
+        resetNavigation(RootStackScreens.Dashboard);
       } else {
-        navigation.replace('Login');
+        resetNavigation(RootStackScreens.Login);
       }
     };
 
     const timer = setTimeout(checkAuthAndNavigate, 2800);
     return () => clearTimeout(timer);
-  }, [navigation]);
+  }, []);
 
   const movingDropStyle = useAnimatedStyle(() => {
     const dropY = interpolate(dropProgress.value, [0, 1], [-260, 260]);
@@ -122,9 +122,9 @@ const SplashScreen: React.FC = () => {
         </Animated.View>
 
         <Text style={styles.title}>
-          AIDetect
+          {SplashConst.appName}
         </Text>
-        <Text style={styles.tagline}>SECURE. VERIFY. PROTECT.</Text>
+        <Text style={styles.tagline}>{SplashConst.tagline}</Text>
       </View>
 
       <View style={styles.footer}>
@@ -134,7 +134,7 @@ const SplashScreen: React.FC = () => {
 
         <View style={styles.bootRow}>
           <Image source={{ uri: STATUS_ICON_URL }} style={styles.bootIcon} resizeMode="contain" />
-          <Text style={styles.bootText}>INITIALIZING NEURAL CORE</Text>
+          <Text style={styles.bootText}>{SplashConst.bootText}</Text>
         </View>
       </View>
     </SafeScreen>

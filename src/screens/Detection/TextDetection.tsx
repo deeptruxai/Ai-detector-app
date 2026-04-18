@@ -4,6 +4,7 @@ import { Button } from '@/components/Button';
 import { Text, SafeScreen } from '@/core/components';
 import { Theme, useTheme } from '@/core/theme';
 import { TextDetectionScreenProps } from '@/navigation/types';
+import { CommonConst, DetectionConst } from '@/utils/Constants';
 
 const TextDetectionScreen: React.FC<TextDetectionScreenProps> = ({ navigation }) => {
   const { theme } = useTheme();
@@ -19,10 +20,10 @@ const TextDetectionScreen: React.FC<TextDetectionScreenProps> = ({ navigation })
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-             <Text style={styles.backText}>←</Text>
+             <Text style={styles.backText}>{CommonConst.backArrow}</Text>
           </TouchableOpacity>
           <Text size="xxl" style={styles.title}>
-            Text Detection
+            {DetectionConst.textScreenTitle}
           </Text>
         </View>
 
@@ -38,7 +39,7 @@ const TextDetectionScreen: React.FC<TextDetectionScreenProps> = ({ navigation })
             ]}>
             <TextInput
               style={[styles.textInput, { color: theme.colors.text }]}
-              placeholder="Paste or type content here..."
+              placeholder={DetectionConst.textPlaceholder}
               placeholderTextColor={theme.colors.textDisabled}
               multiline
               textAlignVertical="top"
@@ -46,23 +47,23 @@ const TextDetectionScreen: React.FC<TextDetectionScreenProps> = ({ navigation })
               onChangeText={setInputText}
             />
             <View style={styles.infoRow}>
-              <Text style={styles.charCount}>{inputText.length} Characters</Text>
+              <Text style={styles.charCount}>{inputText.length} {DetectionConst.charCountSuffix}</Text>
               <TouchableOpacity onPress={() => setInputText('')}>
-                <Text style={styles.clearText}>Clear</Text>
+                <Text style={styles.clearText}>{DetectionConst.clearButton}</Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
 
         <View style={styles.instructions}>
-          <Text style={styles.instructionTitle}>Guidelines</Text>
-          <Text style={styles.instructionItem}>1. Minimum 25 words for accuracy</Text>
-          <Text style={styles.instructionItem}>2. Avoid overly technical jargon</Text>
-          <Text style={styles.instructionItem}>3. AI models work best on prose</Text>
+          <Text style={styles.instructionTitle}>{DetectionConst.guidelinesTitle}</Text>
+          <Text style={styles.instructionItem}>{DetectionConst.textGuidelineOne}</Text>
+          <Text style={styles.instructionItem}>{DetectionConst.textGuidelineTwo}</Text>
+          <Text style={styles.instructionItem}>{DetectionConst.textGuidelineThree}</Text>
         </View>
 
         <Button
-          title="Analyze Text"
+          title={DetectionConst.analyzeTextButton}
           variant="primary"
           onPress={handleScan}
           disabled={inputText.length < 50}
