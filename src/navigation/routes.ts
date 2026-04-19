@@ -6,7 +6,6 @@ export enum Routes {
   Main = 'Main',
   WebView = 'WebView',
   Home = 'Home',
-  Dashboard = 'Dashboard',
   Profile = 'Profile',
   Settings = 'Settings',
 }

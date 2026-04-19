@@ -57,7 +57,7 @@ export const resetNavigation = <T extends RouteName>(
 /**
  * Pop stack screens until the target screen is focused.
  * @example
- * popToScreen('Dashboard');
+ * popToScreen('Home');
  * popToScreen('ScanningStatus', { mode: 'text' });
  */
 export const popToScreen = <T extends RouteName>(
@@ -121,4 +121,27 @@ export const resetToMainTab = (tab: keyof MainTabParamList) => {
       ],
     }),
   );
+};
+
+/**
+ * Switch the Main tab navigator to a specific tab without resetting the whole stack.
+ */
+export const navigateToMainTab = (tab: keyof MainTabParamList) => {
+  navigateTo('Main', { screen: tab });
+};
+
+/**
+ * Replace the current stack screen (same as navigation.replace on the root stack).
+ */
+export const replaceTo = <T extends RouteName>(
+  screen: T,
+  ...[params]: undefined extends RootStackParamList[T]
+    ? [params?: RootStackParamList[T]]
+    : [params: RootStackParamList[T]]
+) => {
+  if (!isNavigationReady()) {
+    return;
+  }
+
+  navigationRef.dispatch(StackActions.replace(screen, params as object));
 };

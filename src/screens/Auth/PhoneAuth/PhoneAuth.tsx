@@ -7,21 +7,19 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Input } from '@/components/Input';
 import { AppBar, Text, SafeScreen, PrimaryButton } from '@/core/components';
 import { Theme, useTheme } from '@/core/theme';
 import { AuthConst } from '@/utils/Constants';
 import { authService } from '@/service/firebase';
-import type { PhoneAuthScreenProps } from '@/navigation/types';
+import { goBack, navigateTo } from '@/navigation/navUtils';
 import { RootStackScreens } from '@/navigation/types';
 
 const PLACEHOLDER_MUTED = 'rgba(187, 202, 191, 0.4)';
 
 const PhoneAuthScreen: React.FC = () => {
   const { theme } = useTheme();
-  const navigation = useNavigation<PhoneAuthScreenProps['navigation']>();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
@@ -37,13 +35,13 @@ const PhoneAuthScreen: React.FC = () => {
     const result = await authService.startPhoneSignIn(trimmed);
     setLoading(false);
     if (result.success) {
-      navigation.navigate(RootStackScreens.VerifyOTP, {
+      navigateTo(RootStackScreens.VerifyOTP, {
         phoneNumber: trimmed,
       });
     } else {
       Alert.alert(AuthConst.genericErrorTitle, result.error || AuthConst.tryAgainMessage);
     }
-  }, [navigation, phone]);
+  }, [phone]);
 
   const fieldRowStyle = useMemo(
     () => ({
@@ -74,7 +72,7 @@ const PhoneAuthScreen: React.FC = () => {
         <AppBar
           title={AuthConst.phoneAuthTitle}
           showBack
-          onBackPress={() => navigation.goBack()}
+          onBackPress={() => goBack()}
           absolute={false}
           containerStyle={styles.appBarPad}
         />

@@ -116,18 +116,41 @@ export const DetectionConst = {
   charCountSuffix: 'Characters',
   clearButton: 'Clear',
   guidelinesTitle: 'Guidelines',
-  textGuidelineOne: '1. Minimum 25 words for accuracy',
+  textGuidelineOne: '1. Minimum 50 characters for accuracy',
   textGuidelineTwo: '2. Avoid overly technical jargon',
   textGuidelineThree: '3. AI models work best on prose',
   analyzeTextButton: 'Analyze Text',
+  textTooShortError: 'Please enter at least 50 characters before scanning.',
+  textInvalidTitle: 'Cannot Analyze',
   imageScreenTitle: 'Image Detection',
   uploadIcon: '📷',
   uploadTitle: 'Upload Image',
-  uploadSubtitle: 'Supports JGP, PNG, HEIC',
+  uploadSubtitle: 'Supports JPG, PNG, HEIC',
   imageGuidelineOne: '1. Ensure clear resolution',
   imageGuidelineTwo: '2. No heavy filters',
   imageGuidelineThree: '3. Maximum size 10MB',
   startAiScanButton: 'Start AI Scan',
+  selectImageButton: 'Select Image',
+  changeImageButton: 'Change Image',
+  imageSelectedTitle: 'Image Ready',
+  imageSelectedSubtitle: 'Tap "Start AI Scan" to analyze.',
+  pickerErrorTitle: 'Could not select media',
+  noMediaError: 'Please select an image first.',
+};
+
+export const ResultConst = {
+  resultTitle: 'Scan Result',
+  aiGeneratedLabel: 'AI Generated',
+  authenticLabel: 'Authentic',
+  scoreLabel: 'AI Score',
+  confidenceLabel: 'Confidence',
+  reasoningLabel: 'Reasoning',
+  artifactsLabel: 'Artifacts',
+  noArtifacts: 'No notable artifacts detected.',
+  doneButton: 'Done',
+  retryButton: 'Try Again',
+  errorTitle: 'Analysis Failed',
+  genericErrorMessage: 'We could not complete the analysis. Please try again.',
 };
 
 export const StatusConst = {
@@ -138,22 +161,6 @@ export const StatusConst = {
   confidenceValue: 'High',
   securityLabel: 'Security',
   securityValue: 'V3.2',
-};
-
-export const DashboardConst = {
-  appTitle: 'AI Detector',
-  guestUser: 'Guest',
-  inputLabel: 'Paste text to analyze',
-  inputPlaceholder: 'Enter or paste the text you want to check...',
-  characterCountSuffix: 'characters',
-  analyzingButton: 'Analyzing...',
-  analyzeButton: 'Analyze Text',
-  clearButton: 'Clear',
-  contentSuffix: 'Content',
-  confidenceSuffix: 'Confidence',
-  aiGeneratedLabel: 'AI Generated',
-  humanWrittenLabel: 'Human Written',
-  recentAnalysesTitle: 'Recent Analyses',
 };
 
 export const ProfileConst = {

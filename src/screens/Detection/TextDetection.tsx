@@ -1,26 +1,34 @@
-import React, { useState, useMemo } from 'react';
-import { StyleSheet, View, TouchableOpacity, ScrollView, TextInput } from 'react-native';
+import React, { useState, useMemo, useCallback } from 'react';
+import { StyleSheet, View, TouchableOpacity, ScrollView, TextInput, Alert } from 'react-native';
 import { Button } from '@/components/Button';
 import { Text, SafeScreen } from '@/core/components';
 import { Theme, useTheme } from '@/core/theme';
-import { TextDetectionScreenProps } from '@/navigation/types';
+import { goBack, navigateTo } from '@/navigation/navUtils';
 import { CommonConst, DetectionConst } from '@/utils/Constants';
+import { MIN_TEXT_LENGTH } from '@/service/aiDetection';
 
-const TextDetectionScreen: React.FC<TextDetectionScreenProps> = ({ navigation }) => {
+const TextDetectionScreen: React.FC = () => {
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const [inputText, setInputText] = useState('');
 
-  const handleScan = () => {
-    navigation.navigate('ScanningStatus', { mode: 'text' });
-  };
+  const trimmedLength = inputText.trim().length;
+  const canAnalyze = trimmedLength >= MIN_TEXT_LENGTH;
+
+  const handleScan = useCallback(() => {
+    if (!canAnalyze) {
+      Alert.alert(DetectionConst.textInvalidTitle, DetectionConst.textTooShortError);
+      return;
+    }
+    navigateTo('ScanningStatus', { mode: 'text', text: inputText.trim() });
+  }, [canAnalyze, inputText]);
 
   return (
     <SafeScreen style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-             <Text style={styles.backText}>{CommonConst.backArrow}</Text>
+          <TouchableOpacity onPress={() => goBack()} style={styles.backButton}>
+            <Text style={styles.backText}>{CommonConst.backArrow}</Text>
           </TouchableOpacity>
           <Text size="xxl" style={styles.title}>
             {DetectionConst.textScreenTitle}
@@ -45,9 +53,12 @@ const TextDetectionScreen: React.FC<TextDetectionScreenProps> = ({ navigation })
               textAlignVertical="top"
               value={inputText}
               onChangeText={setInputText}
+              maxLength={50000}
             />
             <View style={styles.infoRow}>
-              <Text style={styles.charCount}>{inputText.length} {DetectionConst.charCountSuffix}</Text>
+              <Text style={styles.charCount}>
+                {inputText.length} {DetectionConst.charCountSuffix}
+              </Text>
               <TouchableOpacity onPress={() => setInputText('')}>
                 <Text style={styles.clearText}>{DetectionConst.clearButton}</Text>
               </TouchableOpacity>
@@ -66,7 +77,7 @@ const TextDetectionScreen: React.FC<TextDetectionScreenProps> = ({ navigation })
           title={DetectionConst.analyzeTextButton}
           variant="primary"
           onPress={handleScan}
-          disabled={inputText.length < 50}
+          disabled={!canAnalyze}
           style={styles.scanButton}
         />
       </ScrollView>

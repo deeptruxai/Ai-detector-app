@@ -31,7 +31,7 @@ const SafeScreen: React.FC<SafeScreenProps> = ({
   style,
 }) => {
   const { theme } = useTheme();
-  const statusBarColor = statusBarColorProp;
+  const statusBarColor = statusBarColorProp??theme.colors.appBarBackground;
   const bottomInsetColor = bottomInsetColorProp ?? theme.colors.background;
   const barStyle = barStyleProp ?? 'light-content';
   const insets = useSafeAreaInsets();
@@ -82,9 +82,9 @@ const SafeScreen: React.FC<SafeScreenProps> = ({
   return (
     <View style={styles.container}>
       <StatusBar barStyle={barStyle} backgroundColor={statusBarColor} />
-      {statusBarColor && (
-        <View style={{ height: insets.top, backgroundColor: statusBarColor }} />
-      )}
+
+      <View style={{ height: insets.top, backgroundColor: statusBarColor }} />
+
       <View style={[styles.content, style]}>{children}</View>
       <View
         style={{ height: insets.bottom, backgroundColor: bottomInsetColor }}

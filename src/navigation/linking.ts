@@ -3,7 +3,7 @@ import type { RootStackParamList } from './types';
 
 /**
  * Deep links use the custom scheme `aidetector://app/...`.
- * Example: aidetector://app/dashboard — opens the Detect tab.
+ * Example: aidetector://app/home — opens the Home tab.
  */
 export const linking: LinkingOptions<RootStackParamList> = {
   prefixes: ['aidetector://app'],
@@ -17,7 +17,6 @@ export const linking: LinkingOptions<RootStackParamList> = {
       Main: {
         path: '',
         screens: {
-          Dashboard: 'dashboard',
           Home: 'home',
           Profile: 'profile',
           Settings: 'settings',

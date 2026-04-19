@@ -1,15 +1,13 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { Card } from '@/components/Card';
 import { Text, SafeScreen } from '@/core/components';
 import { Theme, useTheme } from '@/core/theme';
 import { authService } from '@/service/firebase';
-import type { HomeScreenProps } from '@/navigation/types';
+import { navigateTo, navigateToMainTab } from '@/navigation/navUtils';
 import { HomeConst, CommonConst } from '@/utils/Constants';
 
 const HomeScreen: React.FC = () => {
-  const navigation = useNavigation<HomeScreenProps['navigation']>();
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const user = authService.currentUser;
@@ -61,7 +59,7 @@ const HomeScreen: React.FC = () => {
             </Text>
             <Text style={styles.headerSubtitle}>{HomeConst.headerSubtitle}</Text>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('Profile')} style={styles.profileToggle}>
+          <TouchableOpacity onPress={() => navigateToMainTab('Profile')} style={styles.profileToggle}>
             <View style={[styles.avatar, { borderColor: theme.colors.primary }]}>
                <Text style={styles.avatarText}>{user?.email?.charAt(0).toUpperCase() || CommonConst.unknownUserInitial}</Text>
             </View>
@@ -92,9 +90,13 @@ const HomeScreen: React.FC = () => {
               style={styles.modeCard}
               onPress={() => {
                 if (mode.route === 'ScanningStatus') {
-                   navigation.navigate('ScanningStatus', { mode: mode.id as any });
+                  navigateTo('ScanningStatus', {
+                    mode: mode.id as 'video' | 'news',
+                  });
+                } else if (mode.route === 'TextDetection') {
+                  navigateTo('TextDetection');
                 } else {
-                   navigation.navigate(mode.route as any);
+                  navigateTo('ImageDetection');
                 }
               }}>
               <View style={[styles.modeIconContainer, { backgroundColor: mode.accent + '20' }]}>

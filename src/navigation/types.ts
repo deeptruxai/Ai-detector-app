@@ -4,7 +4,6 @@ import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 export type MainTabParamList = {
-  Dashboard: undefined;
   Home: undefined;
   Profile: undefined;
   Settings: undefined;
@@ -18,27 +17,60 @@ export type RootStackParamList = {
   VerifyOTP: { phoneNumber: string };
   Main: NavigatorScreenParams<MainTabParamList> | undefined;
   WebView: { title: string; uri: string };
-  ScanningStatus: { mode: 'text' | 'image' | 'video' | 'news' };
+  ScanningStatus: {
+    mode: 'text' | 'image' | 'video' | 'news';
+    /** Optional media payload for image/video scans. */
+    media?: {
+      base64: string;
+      mimeType: string;
+      sizeBytes?: number;
+    };
+    /** Optional text payload for text scans. */
+    text?: string;
+  };
   ImageDetection: undefined;
   TextDetection: undefined;
 };
 
 type RootStackScreenProps = NativeStackScreenProps<RootStackParamList>;
 
-export type SplashScreenProps = NativeStackScreenProps<RootStackParamList, 'Splash'>;
-export type LoginScreenProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
-export type SignupScreenProps = NativeStackScreenProps<RootStackParamList, 'Signup'>;
-export type PhoneAuthScreenProps = NativeStackScreenProps<RootStackParamList, 'PhoneAuth'>;
-export type VerifyOTPScreenProps = NativeStackScreenProps<RootStackParamList, 'VerifyOTP'>;
-export type WebViewScreenProps = NativeStackScreenProps<RootStackParamList, 'WebView'>;
-export type ScanningStatusScreenProps = NativeStackScreenProps<RootStackParamList, 'ScanningStatus'>;
-export type ImageDetectionScreenProps = NativeStackScreenProps<RootStackParamList, 'ImageDetection'>;
-export type TextDetectionScreenProps = NativeStackScreenProps<RootStackParamList, 'TextDetection'>;
-
-export type DashboardScreenProps = CompositeScreenProps<
-  BottomTabScreenProps<MainTabParamList, 'Dashboard'>,
-  RootStackScreenProps
+export type SplashScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'Splash'
 >;
+export type LoginScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'Login'
+>;
+export type SignupScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'Signup'
+>;
+export type PhoneAuthScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'PhoneAuth'
+>;
+export type VerifyOTPScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'VerifyOTP'
+>;
+export type WebViewScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'WebView'
+>;
+export type ScanningStatusScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'ScanningStatus'
+>;
+export type ImageDetectionScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'ImageDetection'
+>;
+export type TextDetectionScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'TextDetection'
+>;
+
 export type HomeScreenProps = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, 'Home'>,
   RootStackScreenProps

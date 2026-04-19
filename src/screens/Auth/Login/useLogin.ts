@@ -1,9 +1,8 @@
 import { useState, useCallback } from 'react';
 import { Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { authService } from '@/service/firebase';
-import { RootStackScreens, type LoginScreenProps } from '@/navigation/types';
-import { resetToMainTab } from '@/navigation/navUtils';
+import { RootStackScreens } from '@/navigation/types';
+import { navigateTo, resetNavigation, resetToMainTab } from '@/navigation/navUtils';
 import { AuthConst } from '@/utils/Constants';
 
 interface LoginErrors {
@@ -28,8 +27,6 @@ interface UseLoginReturn {
 }
 
 export const useLogin = (): UseLoginReturn => {
-  const navigation = useNavigation<LoginScreenProps['navigation']>();
-
   const [email, setEmailState] = useState('');
   const [password, setPasswordState] = useState('');
   const [errors, setErrors] = useState<LoginErrors>({});
@@ -88,7 +85,7 @@ export const useLogin = (): UseLoginReturn => {
     setLoading(false);
 
     if (response.success) {
-      resetToMainTab('Dashboard');
+      resetToMainTab('Home');
     } else {
       Alert.alert(AuthConst.loginFailedTitle, response.error || AuthConst.tryAgainMessage);
     }
@@ -99,7 +96,7 @@ export const useLogin = (): UseLoginReturn => {
     const response = await authService.signInWithGoogle();
     setGoogleLoading(false);
     if (response.success) {
-      resetToMainTab('Dashboard');
+      resetToMainTab('Home');
     } else {
       Alert.alert(AuthConst.loginFailedTitle, response.error || AuthConst.tryAgainMessage);
     }
@@ -127,15 +124,12 @@ export const useLogin = (): UseLoginReturn => {
   }, [email, validateEmail]);
 
   const navigateToSignup = useCallback(() => {
-    navigation.reset({
-      index: 0,
-      routes: [{ name: RootStackScreens.Signup }],
-    });
-  }, [navigation]);
+    resetNavigation(RootStackScreens.Signup);
+  }, []);
 
   const navigateToPhoneAuth = useCallback(() => {
-    navigation.navigate(RootStackScreens.PhoneAuth);
-  }, [navigation]);
+    navigateTo(RootStackScreens.PhoneAuth);
+  }, []);
 
   return {
     email,

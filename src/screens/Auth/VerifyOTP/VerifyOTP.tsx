@@ -53,7 +53,7 @@ const VerifyOTPScreen: React.FC<VerifyOTPScreenProps> = ({ route }) => {
     const result = await authService.confirmPhoneCode(code);
     setLoading(false);
     if (result.success) {
-      resetToMainTab('Dashboard');
+      resetToMainTab('Home');
     } else {
       Alert.alert(AuthConst.loginFailedTitle, result.error || AuthConst.tryAgainMessage);
     }

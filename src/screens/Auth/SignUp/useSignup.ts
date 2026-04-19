@@ -1,9 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import { Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { authService } from '@/service/firebase';
-import type { SignupScreenProps } from '@/navigation/types';
-import { resetToMainTab } from '@/navigation/navUtils';
+import { navigateTo, resetToMainTab } from '@/navigation/navUtils';
 import { AuthConst } from '@/utils/Constants';
 
 interface SignupErrors {
@@ -43,8 +41,6 @@ interface UseSignupReturn {
 }
 
 export const useSignup = (): UseSignupReturn => {
-  const navigation = useNavigation<SignupScreenProps['navigation']>();
-
   const [name, setNameState] = useState('');
   const [email, setEmailState] = useState('');
   const [password, setPasswordState] = useState('');
@@ -136,7 +132,7 @@ export const useSignup = (): UseSignupReturn => {
     setLoading(false);
 
     if (response.success) {
-      resetToMainTab('Dashboard');
+      resetToMainTab('Home');
     } else {
       Alert.alert(AuthConst.signupFailedTitle, response.error || AuthConst.tryAgainMessage);
     }
@@ -147,29 +143,29 @@ export const useSignup = (): UseSignupReturn => {
     const response = await authService.signInWithGoogle();
     setGoogleLoading(false);
     if (response.success) {
-      resetToMainTab('Dashboard');
+      resetToMainTab('Home');
     } else {
       Alert.alert(AuthConst.signupFailedTitle, response.error || AuthConst.tryAgainMessage);
     }
   }, []);
 
   const openTerms = useCallback(() => {
-    navigation.navigate('WebView', {
+    navigateTo('WebView', {
       title: AuthConst.webViewTermsTitle,
       uri: AuthConst.termsUrl,
     });
-  }, [navigation]);
+  }, []);
 
   const openPrivacy = useCallback(() => {
-    navigation.navigate('WebView', {
+    navigateTo('WebView', {
       title: AuthConst.webViewPrivacyTitle,
       uri: AuthConst.privacyUrl,
     });
-  }, [navigation]);
+  }, []);
 
   const navigateToLogin = useCallback(() => {
-    navigation.navigate('Login');
-  }, [navigation]);
+    navigateTo('Login');
+  }, []);
 
   return {
     name,

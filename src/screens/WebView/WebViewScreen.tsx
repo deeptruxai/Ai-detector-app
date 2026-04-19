@@ -1,15 +1,13 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { WebView, type WebViewNavigation } from 'react-native-webview';
-import { useNavigation, useRoute } from '@react-navigation/native';
 import { AppBar, SafeScreen, LoadingState, ErrorState } from '@/core/components';
 import type { WebViewScreenProps } from '@/navigation/types';
+import { goBack } from '@/navigation/navUtils';
 import { isAllowlistedLegalUrl } from '@/utils/legalUrls';
 
-const WebViewScreen: React.FC = () => {
-  const navigation = useNavigation<WebViewScreenProps['navigation']>();
-  const { params } = useRoute<WebViewScreenProps['route']>();
-  const { title, uri } = params;
+const WebViewScreen: React.FC<WebViewScreenProps> = ({ route }) => {
+  const { title, uri } = route.params;
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -42,13 +40,13 @@ const WebViewScreen: React.FC = () => {
         <AppBar
           title={title}
           showBack
-          onBackPress={() => navigation.goBack()}
+          onBackPress={() => goBack()}
           absolute={false}
         />
         <ErrorState
           title="Unable to open link"
           message="This address is not allowed in the app."
-          onRetry={() => navigation.goBack()}
+          onRetry={() => goBack()}
           retryLabel="Go back"
         />
       </SafeScreen>
@@ -60,7 +58,7 @@ const WebViewScreen: React.FC = () => {
       <AppBar
         title={title}
         showBack
-        onBackPress={() => navigation.goBack()}
+        onBackPress={() => goBack()}
         absolute={false}
       />
       {error ? (

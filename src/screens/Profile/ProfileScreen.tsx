@@ -6,19 +6,16 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { Text, SafeScreen } from '@/core/components';
 import { authService } from '@/service/firebase';
 import { Theme, useTheme } from '@/core/theme';
-import type { ProfileScreenProps } from '@/navigation/types';
-import { resetNavigation } from '@/navigation/navUtils';
+import { goBack, resetNavigation } from '@/navigation/navUtils';
 import { RootStackScreens } from '@/navigation/types';
 import { CommonConst, ProfileConst } from '@/utils/Constants';
 
 const ProfileScreen: React.FC = () => {
-  const navigation = useNavigation<ProfileScreenProps['navigation']>();
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const user = authService.currentUser;
@@ -45,7 +42,7 @@ const ProfileScreen: React.FC = () => {
     <SafeScreen style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <TouchableOpacity onPress={() => goBack()} style={styles.backButton}>
              <Text style={styles.backText}>{CommonConst.backArrow}</Text>
           </TouchableOpacity>
           <Text size="xxl" style={styles.title}>{ProfileConst.title}</Text>
