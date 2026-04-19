@@ -145,15 +145,16 @@ export const DetectionConst = {
   videoScreenTitle: 'Video Detection',
   videoUploadIcon: '🎥',
   videoUploadTitle: 'Select Video',
-  videoUploadSubtitle: 'Supports MP4, MOV, WebM (max 25MB)',
+  videoUploadSubtitle: 'Supports MP4, MOV, WebM (max 20MB)',
   videoReadyTitle: 'Video selected',
+  videoPlaceholderHint: 'Preview is not shown for videos.',
   videoSelectedSubtitle: 'Tap "Start AI Scan" to analyze.',
   selectVideoButton: 'Select Video',
   changeVideoButton: 'Change Video',
   noVideoError: 'Please select a video first.',
   videoGuidelineOne: '1. Shorter clips analyze faster and more reliably',
   videoGuidelineTwo: '2. Use the original file when possible',
-  videoGuidelineThree: '3. Maximum size 25MB',
+  videoGuidelineThree: '3. Maximum size 20MB',
 };
 
 export const ResultConst = {

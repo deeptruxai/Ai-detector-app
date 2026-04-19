@@ -7,15 +7,13 @@
  */
 
 import { runDetection } from './gemini';
+import { MAX_IMAGE_BYTES, MAX_VIDEO_BYTES } from './mediaLimits';
 import { normalizeImageMimeType } from './mime';
 import { buildMediaDetectionPrompt } from './prompt';
 import { AiDetectionError, DetectionInput, DetectionResult } from './types';
 
 const SUPPORTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
 const SUPPORTED_VIDEO_TYPES = ['video/mp4', 'video/quicktime', 'video/webm', 'video/3gpp'];
-
-const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
-const MAX_VIDEO_BYTES = 25 * 1024 * 1024;
 
 const validateInput = (input: DetectionInput): void => {
   if (!input?.base64 || !input?.mimeType) {
@@ -35,7 +33,14 @@ const validateInput = (input: DetectionInput): void => {
   }
 
   if (typeof input.sizeBytes === 'number') {
-    const limit = isImage ? MAX_IMAGE_BYTES : MAX_VIDEO_BYTES;
+    const limit =
+      input.sourceKind === 'video'
+        ? MAX_VIDEO_BYTES
+        : input.sourceKind === 'image'
+          ? MAX_IMAGE_BYTES
+          : isImage
+            ? MAX_IMAGE_BYTES
+            : MAX_VIDEO_BYTES;
     if (input.sizeBytes > limit) {
       throw new AiDetectionError(
         'media_too_large',

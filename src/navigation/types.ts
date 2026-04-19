@@ -24,6 +24,7 @@ export type RootStackParamList = {
       base64: string;
       mimeType: string;
       sizeBytes?: number;
+      sourceKind?: 'image' | 'video';
     };
     /** Optional text payload for text scans. */
     text?: string;

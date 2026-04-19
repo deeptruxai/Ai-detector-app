@@ -13,6 +13,11 @@ export interface DetectionInput {
   mimeType: string;
   /** Optional file size in bytes for client-side guardrails. */
   sizeBytes?: number;
+  /**
+   * How the asset was chosen in the picker. Used for size limits when the OS
+   * reports an incorrect MIME (e.g. video labeled as image/jpeg).
+   */
+  sourceKind?: DetectionMediaKind;
 }
 
 export interface TextDetectionInput {

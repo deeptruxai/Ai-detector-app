@@ -11,9 +11,17 @@ import { Button } from '@/components/Button';
 import { Text, SafeScreen, HeaderBackButton } from '@/core/components';
 import { Theme, useTheme } from '@/core/theme';
 import { useNavigation } from '@react-navigation/native';
-import { goBack, navigateTo, type RootStackNavigation } from '@/navigation/navUtils';
+import {
+  goBack,
+  navigateTo,
+  type RootStackNavigation,
+} from '@/navigation/navUtils';
 import { DetectionConst } from '@/utils/Constants';
-import { AiDetectionError, DetectionInput, pickMedia } from '@/service/aiDetection';
+import {
+  AiDetectionError,
+  DetectionInput,
+  pickMedia,
+} from '@/service/aiDetection';
 
 const formatSize = (bytes?: number): string | null => {
   if (typeof bytes !== 'number' || bytes <= 0) {
@@ -45,7 +53,9 @@ const VideoDetectionScreen: React.FC = () => {
       }
     } catch (err) {
       const message =
-        err instanceof AiDetectionError ? err.message : DetectionConst.pickerErrorTitle;
+        err instanceof AiDetectionError
+          ? err.message
+          : DetectionConst.pickerErrorTitle;
       Alert.alert(DetectionConst.pickerErrorTitle, message);
     } finally {
       setPicking(false);
@@ -57,7 +67,10 @@ const VideoDetectionScreen: React.FC = () => {
       Alert.alert(DetectionConst.videoScreenTitle, DetectionConst.noVideoError);
       return;
     }
-    navigateTo(navigation, 'ScanningStatus', { mode: 'video', media: selected });
+    navigateTo(navigation, 'ScanningStatus', {
+      mode: 'video',
+      media: selected,
+    });
   }, [navigation, selected]);
 
   const sizeLabel = formatSize(selected?.sizeBytes);
@@ -76,18 +89,31 @@ const VideoDetectionScreen: React.FC = () => {
           style={styles.uploadContainer}
           activeOpacity={0.85}
           onPress={handlePick}
-          disabled={picking}>
+          disabled={picking}
+        >
           <View
             style={[
               styles.uploadBox,
               { borderColor: theme.colors.primary, borderStyle: 'dashed' },
-            ]}>
+            ]}
+          >
             {picking ? (
               <ActivityIndicator color={theme.colors.primary} />
             ) : selected ? (
               <View style={styles.videoPlaceholder}>
-                <Text style={styles.uploadIcon}>{DetectionConst.videoUploadIcon}</Text>
-                <Text style={styles.uploadTitle}>{DetectionConst.videoReadyTitle}</Text>
+                <Text style={styles.uploadIcon}>
+                  {DetectionConst.videoUploadIcon}
+                </Text>
+                <View
+                  style={[
+                    styles.placeholderPanel,
+                    { borderColor: theme.colors.border },
+                  ]}
+                >
+                  <Text style={styles.placeholderLabel}>
+                    {DetectionConst.videoReadyTitle}
+                  </Text>
+                </View>
                 <Text style={styles.videoMeta}>{selected.mimeType}</Text>
                 {sizeLabel ? (
                   <Text style={styles.videoMetaSecondary}>{sizeLabel}</Text>
@@ -95,27 +121,47 @@ const VideoDetectionScreen: React.FC = () => {
               </View>
             ) : (
               <>
-                <Text style={styles.uploadIcon}>{DetectionConst.videoUploadIcon}</Text>
-                <Text style={styles.uploadTitle}>{DetectionConst.videoUploadTitle}</Text>
-                <Text style={styles.uploadSubtitle}>{DetectionConst.videoUploadSubtitle}</Text>
+                <Text style={styles.uploadIcon}>
+                  {DetectionConst.videoUploadIcon}
+                </Text>
+                <Text style={styles.uploadTitle}>
+                  {DetectionConst.videoUploadTitle}
+                </Text>
+                <Text style={styles.uploadSubtitle}>
+                  {DetectionConst.videoUploadSubtitle}
+                </Text>
               </>
             )}
           </View>
         </TouchableOpacity>
 
         {selected ? (
-          <Text style={styles.selectedSubtitle}>{DetectionConst.videoSelectedSubtitle}</Text>
+          <Text style={styles.selectedSubtitle}>
+            {DetectionConst.videoSelectedSubtitle}
+          </Text>
         ) : null}
 
         <View style={styles.instructions}>
-          <Text style={styles.instructionTitle}>{DetectionConst.guidelinesTitle}</Text>
-          <Text style={styles.instructionItem}>{DetectionConst.videoGuidelineOne}</Text>
-          <Text style={styles.instructionItem}>{DetectionConst.videoGuidelineTwo}</Text>
-          <Text style={styles.instructionItem}>{DetectionConst.videoGuidelineThree}</Text>
+          <Text style={styles.instructionTitle}>
+            {DetectionConst.guidelinesTitle}
+          </Text>
+          <Text style={styles.instructionItem}>
+            {DetectionConst.videoGuidelineOne}
+          </Text>
+          <Text style={styles.instructionItem}>
+            {DetectionConst.videoGuidelineTwo}
+          </Text>
+          <Text style={styles.instructionItem}>
+            {DetectionConst.videoGuidelineThree}
+          </Text>
         </View>
 
         <Button
-          title={selected ? DetectionConst.changeVideoButton : DetectionConst.selectVideoButton}
+          title={
+            selected
+              ? DetectionConst.changeVideoButton
+              : DetectionConst.selectVideoButton
+          }
           variant="outline"
           onPress={handlePick}
           loading={picking}
@@ -169,11 +215,36 @@ const createStyles = (theme: Theme) =>
     },
     videoPlaceholder: {
       alignItems: 'center',
+      width: '100%',
+    },
+    placeholderPanel: {
+      width: '100%',
+      maxWidth: 280,
+      aspectRatio: 16 / 9,
+      borderRadius: 16,
+      borderWidth: 1,
+      backgroundColor: theme.colors.background,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 16,
+      marginBottom: 12,
+    },
+    placeholderLabel: {
+      fontSize: 17,
+      fontWeight: '700',
+      color: theme.colors.text,
+      textAlign: 'center',
+    },
+    placeholderHint: {
+      fontSize: 13,
+      color: theme.colors.textSecondary,
+      textAlign: 'center',
+      marginTop: 6,
     },
     videoMeta: {
       fontSize: 14,
       color: theme.colors.textSecondary,
-      marginTop: 8,
+      marginTop: 4,
     },
     videoMetaSecondary: {
       fontSize: 13,
@@ -182,7 +253,7 @@ const createStyles = (theme: Theme) =>
     },
     uploadIcon: {
       fontSize: 48,
-      marginBottom: 16,
+      marginBottom: 12,
     },
     uploadTitle: {
       fontSize: 18,

@@ -1,10 +1,16 @@
-import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
+import React, {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useCallback,
+} from 'react';
 import { StyleSheet, View, Animated, Easing, ScrollView } from 'react-native';
 import { Text, SafeScreen, HeaderBackButton } from '@/core/components';
 import { Button } from '@/components/Button';
 import { Theme, useTheme } from '@/core/theme';
 import { ScanningStatusScreenProps } from '@/navigation/types';
-import { goBack, replaceTo } from '@/navigation/navUtils';
+import { goBack, resetToMainTab } from '@/navigation/navUtils';
 import { ResultConst, StatusConst } from '@/utils/Constants';
 import {
   AiDetectionError,
@@ -92,6 +98,14 @@ const ScanningStatusScreen: React.FC<ScanningStatusScreenProps> = ({
     [finalize],
   );
 
+  const handleResetToHome = useCallback(() => {
+    resetToMainTab(navigation, 'Home');
+  }, [navigation]);
+
+  const handleGoBack = useCallback(() => {
+    goBack(navigation);
+  }, [navigation]);
+
   useEffect(() => {
     if (phase !== 'scanning') return;
 
@@ -117,14 +131,14 @@ const ScanningStatusScreen: React.FC<ScanningStatusScreenProps> = ({
 
     setErrorMessage(ResultConst.genericErrorMessage);
     setPhase('error');
-  }, [phase, mode, media, text, runAnalysis, finalize]);
+  }, [phase, mode, media, text, runAnalysis]);
 
   if (phase === 'done' && result) {
     return (
       <ResultView
         result={result}
-        onDone={() => replaceTo(navigation, 'Main', { screen: 'Home' })}
-        onRetry={() => goBack(navigation)}
+        onDone={handleResetToHome}
+        onRetry={handleGoBack}
       />
     );
   }
@@ -133,8 +147,8 @@ const ScanningStatusScreen: React.FC<ScanningStatusScreenProps> = ({
     return (
       <ErrorView
         message={errorMessage ?? ResultConst.genericErrorMessage}
-        onRetry={() => goBack(navigation)}
-        onDone={() => replaceTo(navigation, 'Main', { screen: 'Home' })}
+        onRetry={handleGoBack}
+        onDone={handleResetToHome}
       />
     );
   }
@@ -143,16 +157,25 @@ const ScanningStatusScreen: React.FC<ScanningStatusScreenProps> = ({
     <SafeScreen>
       <View style={styles.content}>
         <Text size="xxxl" style={styles.title}>
-          {StatusConst.scanningPrefix} {mode}{StatusConst.scanningSuffix}
+          {StatusConst.scanningPrefix} {mode}
+          {StatusConst.scanningSuffix}
         </Text>
         <Text size="md" style={styles.subtitle}>
           {StatusConst.scanningSubtitle}
         </Text>
 
         <View style={styles.progressContainer}>
-          <View style={[styles.progressTrack, { backgroundColor: theme.colors.border }]}>
+          <View
+            style={[
+              styles.progressTrack,
+              { backgroundColor: theme.colors.border },
+            ]}
+          >
             <Animated.View
-              style={[styles.progressBar, { backgroundColor: theme.colors.primary, width }]}
+              style={[
+                styles.progressBar,
+                { backgroundColor: theme.colors.primary, width },
+              ]}
             />
           </View>
           <Text style={styles.percentage}>{progress}%</Text>
@@ -183,7 +206,9 @@ const ResultView: React.FC<ResultViewProps> = ({ result, onDone, onRetry }) => {
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const accent = result.isAI ? theme.colors.error : theme.colors.primary;
-  const verdict = result.isAI ? ResultConst.aiGeneratedLabel : ResultConst.authenticLabel;
+  const verdict = result.isAI
+    ? ResultConst.aiGeneratedLabel
+    : ResultConst.authenticLabel;
 
   return (
     <SafeScreen>
@@ -196,8 +221,12 @@ const ResultView: React.FC<ResultViewProps> = ({ result, onDone, onRetry }) => {
         </View>
 
         <View style={[styles.verdictCard, { borderColor: accent }]}>
-          <Text style={[styles.verdictLabel, { color: accent }]}>{verdict}</Text>
-          <Text style={styles.verdictScore}>{result.score.toFixed(1)} / 10</Text>
+          <Text style={[styles.verdictLabel, { color: accent }]}>
+            {verdict}
+          </Text>
+          <Text style={styles.verdictScore}>
+            {result.score.toFixed(1)} / 10
+          </Text>
           <Text style={styles.verdictHint}>
             {ResultConst.confidenceLabel}: {result.confidence}
           </Text>
@@ -225,7 +254,11 @@ const ResultView: React.FC<ResultViewProps> = ({ result, onDone, onRetry }) => {
           onPress={onDone}
           style={styles.primaryAction}
         />
-        <Button title={ResultConst.retryButton} variant="outline" onPress={onRetry} />
+        <Button
+          title={ResultConst.retryButton}
+          variant="outline"
+          onPress={onRetry}
+        />
       </ScrollView>
     </SafeScreen>
   );
@@ -256,13 +289,20 @@ const ErrorView: React.FC<ErrorViewProps> = ({ message, onRetry, onDone }) => {
           onPress={onRetry}
           style={styles.primaryAction}
         />
-        <Button title={ResultConst.doneButton} variant="outline" onPress={onDone} />
+        <Button
+          title={ResultConst.doneButton}
+          variant="outline"
+          onPress={onDone}
+        />
       </View>
     </SafeScreen>
   );
 };
 
-const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => {
+const Section: React.FC<{ title: string; children: React.ReactNode }> = ({
+  title,
+  children,
+}) => {
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
   return (
