@@ -1,11 +1,13 @@
 import { useState, useCallback, useMemo } from 'react';
 import { Alert } from 'react-native';
-import { authService } from '@/service/firebase';
+import { authService, dbService, mustVerifyEmail } from '@/service/firebase';
 import {
   navigateTo,
+  resetNavigation,
   resetToMainTab,
   type RootStackNavigation,
 } from '@/navigation/navUtils';
+import { RootStackScreens } from '@/navigation/types';
 import { AuthConst } from '@/utils/Constants';
 
 interface SignupErrors {
@@ -136,7 +138,10 @@ export const useSignup = (navigation: RootStackNavigation): UseSignupReturn => {
     setLoading(false);
 
     if (response.success) {
-      resetToMainTab(navigation, 'Home');
+      if (response.user) {
+        void dbService.updateUserProfile(response.user.uid, name.trim(), email.trim());
+      }
+      resetNavigation(navigation, RootStackScreens.VerifyEmail);
     } else {
       Alert.alert(AuthConst.signupFailedTitle, response.error || AuthConst.tryAgainMessage);
     }
@@ -147,7 +152,19 @@ export const useSignup = (navigation: RootStackNavigation): UseSignupReturn => {
     const response = await authService.signInWithGoogle();
     setGoogleLoading(false);
     if (response.success) {
-      resetToMainTab(navigation, 'Home');
+      const u = response.user ?? authService.currentUser;
+      if (u && mustVerifyEmail(u)) {
+        resetNavigation(navigation, RootStackScreens.VerifyEmail);
+      } else {
+        if (u) {
+          void dbService.updateUserProfile(
+            u.uid,
+            u.displayName?.trim() || 'User',
+            u.email ?? undefined,
+          );
+        }
+        resetToMainTab(navigation, 'Home');
+      }
     } else {
       Alert.alert(AuthConst.signupFailedTitle, response.error || AuthConst.tryAgainMessage);
     }

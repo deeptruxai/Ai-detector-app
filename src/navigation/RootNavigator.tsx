@@ -7,6 +7,7 @@ import MainTabNavigator from './MainTabNavigator';
 import SplashScreen from '@/screens/Splash';
 import LoginScreen from '@/screens/Auth/Login/Login';
 import SignupScreen from '@/screens/Auth/SignUp/Signup';
+import VerifyEmailScreen from '@/screens/Auth/VerifyEmail/VerifyEmail';
 import PhoneAuthScreen from '@/screens/Auth/PhoneAuth/PhoneAuth';
 import VerifyOTPScreen from '@/screens/Auth/VerifyOTP/VerifyOTP';
 import WebViewScreen from '@/screens/WebView/WebViewScreen';
@@ -40,6 +41,10 @@ const RootNavigator: React.FC = () => {
       <Stack.Screen name={RootStackScreens.Splash} component={SplashScreen} />
       <Stack.Screen name={RootStackScreens.Login} component={LoginScreen} />
       <Stack.Screen name={RootStackScreens.Signup} component={SignupScreen} />
+      <Stack.Screen
+        name={RootStackScreens.VerifyEmail}
+        component={VerifyEmailScreen}
+      />
       <Stack.Screen
         name={RootStackScreens.PhoneAuth}
         component={PhoneAuthScreen}

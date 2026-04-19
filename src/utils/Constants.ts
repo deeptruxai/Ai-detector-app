@@ -84,6 +84,19 @@ export const AuthConst = {
   fullNameRequiredError: 'Full name is required',
   passwordUppercaseError: 'Password must contain at least one uppercase letter',
   passwordNumberError: 'Password must contain at least one number',
+  verifyEmailTitle: 'Verify your email',
+  verifyEmailSubtitle:
+    'We sent a verification link to your inbox. Open the link, then return here and continue.',
+  verifyEmailAddressLabel: 'Sent to',
+  verifyEmailResendButton: 'Resend email',
+  verifyEmailResending: 'Sending…',
+  verifyEmailResentTitle: 'Email sent',
+  verifyEmailResentBody: 'Check your inbox for a new verification link.',
+  verifyEmailContinueButton: 'I have verified — continue',
+  verifyEmailChecking: 'Checking…',
+  verifyEmailStillUnverified:
+    'Your email is not verified yet. Open the link we sent you, then try again.',
+  verifyEmailSignOutButton: 'Use a different account',
 };
 
 export const HomeConst = {

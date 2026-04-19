@@ -11,6 +11,8 @@ import {
   signInWithCredential,
   GoogleAuthProvider,
   signInWithPhoneNumber,
+  reload as firebaseReload,
+  sendEmailVerification as firebaseSendEmailVerification,
   FirebaseAuthTypes,
 } from '@react-native-firebase/auth';
 import { GOOGLE_WEB_CLIENT_ID } from '@/config/googleSignIn';
@@ -24,6 +26,16 @@ interface AuthResponse {
   user?: FirebaseUser;
   error?: string;
 }
+
+/**
+ * Email/password accounts must verify via Firebase email link before app access.
+ * Google / phone providers are treated as already verified paths.
+ */
+export const mustVerifyEmail = (user: FirebaseUser | null): boolean => {
+  if (!user) return false;
+  if (user.emailVerified) return false;
+  return user.providerData.some(p => p.providerId === 'password');
+};
 
 /**
  * Firebase Authentication Service
@@ -123,6 +135,47 @@ class AuthService {
   }
 
   /**
+   * Reload current user (e.g. after user taps link in verification email).
+   */
+  public async reloadCurrentUser(): Promise<AuthResponse> {
+    const user = this.auth.currentUser;
+    if (!user) {
+      return { success: false, error: 'No signed-in user.' };
+    }
+    try {
+      await firebaseReload(user);
+      return { success: true, user: this.auth.currentUser ?? undefined };
+    } catch (error) {
+      return {
+        success: false,
+        error: this.getErrorMessage(error as AuthError),
+      };
+    }
+  }
+
+  /**
+   * Send Firebase verification email to the current user (signed in, unverified).
+   */
+  public async sendVerificationEmail(): Promise<AuthResponse> {
+    const user = this.auth.currentUser;
+    if (!user) {
+      return { success: false, error: 'No signed-in user.' };
+    }
+    if (user.emailVerified) {
+      return { success: true, user };
+    }
+    try {
+      await firebaseSendEmailVerification(user);
+      return { success: true, user };
+    } catch (error) {
+      return {
+        success: false,
+        error: this.getErrorMessage(error as AuthError),
+      };
+    }
+  }
+
+  /**
    * Start SMS verification. Call `confirmPhoneCode` after the user enters the code.
    */
   public async startPhoneSignIn(phoneNumber: string, forceResend?: boolean): Promise<AuthResponse> {
@@ -186,6 +239,10 @@ class AuthService {
 
       if (displayName && userCredential.user) {
         await firebaseUpdateProfile(userCredential.user, { displayName });
+      }
+
+      if (userCredential.user && !userCredential.user.emailVerified) {
+        await firebaseSendEmailVerification(userCredential.user);
       }
 
       return {
@@ -286,6 +343,8 @@ class AuthService {
         return 'This account is already linked to another user.';
       case 'auth/account-exists-with-different-credential':
         return 'An account already exists with this email using a different sign-in method.';
+      case 'auth/invalid-credential':
+        return 'Sign-in could not be completed. Please try again.';
       default:
         return error.message || 'Something went wrong. Please try again.';
     }

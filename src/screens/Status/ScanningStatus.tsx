@@ -9,7 +9,7 @@ import { StyleSheet, View, Animated, Easing, ScrollView } from 'react-native';
 import { Text, SafeScreen, HeaderBackButton } from '@/core/components';
 import { Button } from '@/components/Button';
 import { Theme, useTheme } from '@/core/theme';
-import { ScanningStatusScreenProps } from '@/navigation/types';
+import type { ScanningStatusScreenProps } from '@/navigation/types';
 import { goBack, resetToMainTab } from '@/navigation/navUtils';
 import { ResultConst, StatusConst } from '@/utils/Constants';
 import {
@@ -18,6 +18,60 @@ import {
   analyzeMedia,
   analyzeText,
 } from '@/service/aiDetection';
+import {
+  authService,
+  dbService,
+  getAppSessionId,
+  mustVerifyEmail,
+} from '@/service/firebase';
+
+const buildAiLogPayload = (r: DetectionResult): string =>
+  JSON.stringify({
+    score: r.score,
+    isAI: r.isAI,
+    confidence: r.confidence,
+    reasoning: r.reasoning.slice(0, 600),
+    artifacts: r.artifacts.slice(0, 8),
+  });
+
+const logAnalysisFirestore = (
+  r: DetectionResult,
+  mode: 'text' | 'image' | 'video',
+  media?: ScanningStatusScreenProps['route']['params']['media'],
+) => {
+  const user = authService.currentUser;
+  if (!user || mustVerifyEmail(user)) return;
+  const mime =
+    mode === 'text'
+      ? 'text/plain'
+      : media?.mimeType?.trim() || 'application/octet-stream';
+  const tokens =
+    typeof r.tokensUsed === 'number' && Number.isFinite(r.tokensUsed) && r.tokensUsed >= 0
+      ? Math.floor(r.tokensUsed)
+      : 0;
+  void dbService.logUsage(
+    tokens,
+    mime,
+    r.isAI,
+    user.uid,
+    getAppSessionId(),
+    buildAiLogPayload(r),
+    user.displayName ?? undefined,
+    user.email ?? undefined,
+  );
+};
+
+const logScanErrorFirestore = (mode: string, safeMessage: string) => {
+  const user = authService.currentUser;
+  if (!user) return;
+  void dbService.logError(
+    user.uid,
+    getAppSessionId(),
+    safeMessage.slice(0, 400),
+    undefined,
+    `client:scan:${mode}`,
+  );
+};
 
 type Phase = 'scanning' | 'done' | 'error';
 
@@ -86,16 +140,18 @@ const ScanningStatusScreen: React.FC<ScanningStatusScreenProps> = ({
         finalize();
         setResult(r);
         setPhase('done');
+        logAnalysisFirestore(r, mode, media);
       } catch (err) {
         const message =
           err instanceof AiDetectionError
             ? err.message
             : ResultConst.genericErrorMessage;
+        logScanErrorFirestore(mode, message);
         setErrorMessage(message);
         setPhase('error');
       }
     },
-    [finalize],
+    [finalize, mode, media],
   );
 
   const handleResetToHome = useCallback(() => {

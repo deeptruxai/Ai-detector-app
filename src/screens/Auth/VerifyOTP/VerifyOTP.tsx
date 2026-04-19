@@ -13,8 +13,9 @@ import { Text, SafeScreen, PrimaryButton, LoadingState } from '@/core/components
 import { Theme, useTheme } from '@/core/theme';
 import { VerifyOTPScreenProps } from '@/navigation/types';
 import { AuthConst } from '@/utils/Constants';
-import { authService } from '@/service/firebase';
-import { resetToMainTab } from '@/navigation/navUtils';
+import { authService, mustVerifyEmail } from '@/service/firebase';
+import { resetNavigation, resetToMainTab } from '@/navigation/navUtils';
+import { RootStackScreens } from '@/navigation/types';
 
 const VerifyOTPScreen: React.FC<VerifyOTPScreenProps> = ({ route, navigation }) => {
   const { phoneNumber } = route.params;
@@ -53,7 +54,12 @@ const VerifyOTPScreen: React.FC<VerifyOTPScreenProps> = ({ route, navigation }) 
     const result = await authService.confirmPhoneCode(code);
     setLoading(false);
     if (result.success) {
-      resetToMainTab(navigation, 'Home');
+      const u = result.user ?? authService.currentUser;
+      if (u && mustVerifyEmail(u)) {
+        resetNavigation(navigation, RootStackScreens.VerifyEmail);
+      } else {
+        resetToMainTab(navigation, 'Home');
+      }
     } else {
       Alert.alert(AuthConst.loginFailedTitle, result.error || AuthConst.tryAgainMessage);
     }

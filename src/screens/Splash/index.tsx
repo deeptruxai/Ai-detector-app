@@ -24,7 +24,7 @@ import Animated, {
 import { useNavigation } from '@react-navigation/native';
 import { resetNavigation, RootStackScreens } from '@/navigation';
 import type { RootStackNavigation } from '@/navigation/navUtils';
-import { authService } from '@/service/firebase';
+import { authService, mustVerifyEmail } from '@/service/firebase';
 import { SplashConst } from '@/utils/Constants';
 import AppLogo from '@/images/svg/Logo';
 
@@ -115,13 +115,29 @@ const SplashScreen: React.FC = () => {
   }, [radialPulse]);
 
   useEffect(() => {
-    const id = setTimeout(() => {
-      const next = authService.isLoggedIn
-        ? RootStackScreens.Main
-        : RootStackScreens.Login;
-      resetNavigation(navigation, next);
-    }, SplashConst.navigationDelayMs);
-    return () => clearTimeout(id);
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+    const unsubscribe = authService.onAuthStateChanged(user => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(() => {
+        if (!user) {
+          resetNavigation(navigation, RootStackScreens.Login);
+          return;
+        }
+        if (mustVerifyEmail(user)) {
+          resetNavigation(navigation, RootStackScreens.VerifyEmail);
+          return;
+        }
+        resetNavigation(navigation, RootStackScreens.Main);
+      }, SplashConst.navigationDelayMs);
+    });
+    return () => {
+      unsubscribe();
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, [navigation]);
 
   const progressFillStyle = useAnimatedStyle(() => ({

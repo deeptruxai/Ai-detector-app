@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { Alert } from 'react-native';
-import { authService } from '@/service/firebase';
+import { authService, dbService, mustVerifyEmail } from '@/service/firebase';
 import { RootStackScreens } from '@/navigation/types';
 import {
   navigateTo,
@@ -90,7 +90,12 @@ export const useLogin = (navigation: RootStackNavigation): UseLoginReturn => {
     setLoading(false);
 
     if (response.success) {
-      resetToMainTab(navigation, 'Home');
+      const u = response.user ?? authService.currentUser;
+      if (u && mustVerifyEmail(u)) {
+        resetNavigation(navigation, RootStackScreens.VerifyEmail);
+      } else {
+        resetToMainTab(navigation, 'Home');
+      }
     } else {
       Alert.alert(
         AuthConst.loginFailedTitle,
@@ -104,7 +109,19 @@ export const useLogin = (navigation: RootStackNavigation): UseLoginReturn => {
     const response = await authService.signInWithGoogle();
     setGoogleLoading(false);
     if (response.success) {
-      resetToMainTab(navigation, 'Home');
+      const u = response.user ?? authService.currentUser;
+      if (u && mustVerifyEmail(u)) {
+        resetNavigation(navigation, RootStackScreens.VerifyEmail);
+      } else {
+        if (u) {
+          void dbService.updateUserProfile(
+            u.uid,
+            u.displayName?.trim() || 'User',
+            u.email ?? undefined,
+          );
+        }
+        resetToMainTab(navigation, 'Home');
+      }
     } else {
       Alert.alert(
         AuthConst.loginFailedTitle,

@@ -12,6 +12,7 @@ export const linking: LinkingOptions<RootStackParamList> = {
       Splash: 'splash',
       Login: 'login',
       Signup: 'signup',
+      VerifyEmail: 'verify-email',
       PhoneAuth: 'phone',
       VerifyOTP: 'verify',
       Main: {

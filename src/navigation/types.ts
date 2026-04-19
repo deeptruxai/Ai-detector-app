@@ -13,6 +13,8 @@ export type RootStackParamList = {
   Splash: undefined;
   Login: undefined;
   Signup: undefined;
+  /** Shown after email/password sign-up until user verifies via link in inbox. */
+  VerifyEmail: undefined;
   PhoneAuth: undefined;
   VerifyOTP: { phoneNumber: string };
   Main: NavigatorScreenParams<MainTabParamList> | undefined;
@@ -48,6 +50,10 @@ export type LoginScreenProps = NativeStackScreenProps<
 export type SignupScreenProps = NativeStackScreenProps<
   RootStackParamList,
   'Signup'
+>;
+export type VerifyEmailScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'VerifyEmail'
 >;
 export type PhoneAuthScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -105,6 +111,7 @@ export enum RootStackScreens {
   Splash = 'Splash',
   Login = 'Login',
   Signup = 'Signup',
+  VerifyEmail = 'VerifyEmail',
   PhoneAuth = 'PhoneAuth',
   VerifyOTP = 'VerifyOTP',
   Main = 'Main',

@@ -39,7 +39,8 @@ const LoginScreen: React.FC = () => {
   return (
     <SafeScreen
       statusBarColor={theme.colors.appBarBackground}
-      bottomInsetColor={theme.colors.background}>
+      bottomInsetColor={theme.colors.background}
+    >
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -62,12 +63,18 @@ const LoginScreen: React.FC = () => {
 
           <TouchableOpacity
             activeOpacity={0.85}
-            style={[styles.socialButton, (loading || googleLoading) && styles.socialButtonDisabled]}
+            style={[
+              styles.socialButton,
+              (loading || googleLoading) && styles.socialButtonDisabled,
+            ]}
             onPress={handleGoogleLogin}
-            disabled={loading || googleLoading}>
+            disabled={loading || googleLoading}
+          >
             <Icon name="google" size={20} color={theme.colors.text} />
             <Text style={styles.socialButtonText}>
-              {googleLoading ? AuthConst.signingInWithGoogle : AuthConst.continueWithGoogle}
+              {googleLoading
+                ? AuthConst.signingInWithGoogle
+                : AuthConst.continueWithGoogle}
             </Text>
           </TouchableOpacity>
 
@@ -116,14 +123,6 @@ const LoginScreen: React.FC = () => {
             />
 
             <View style={styles.optionsRow}>
-              <TouchableOpacity activeOpacity={0.85} style={styles.rememberRow}>
-                <Icon
-                  name="checkbox-blank-outline"
-                  size={16}
-                  color={theme.colors.borderLight}
-                />
-                <Text style={styles.rememberText}>Remember me</Text>
-              </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.85}
                 onPress={handleForgotPassword}
@@ -150,7 +149,8 @@ const LoginScreen: React.FC = () => {
           <TouchableOpacity
             activeOpacity={0.85}
             style={styles.phoneButton}
-            onPress={navigateToPhoneAuth}>
+            onPress={navigateToPhoneAuth}
+          >
             <Icon name="cellphone" size={16} color={theme.colors.primary} />
             <Text style={styles.phoneButtonText}>
               Sign in with Phone Number (OTP)
@@ -289,9 +289,10 @@ const createStyles = (theme: Theme) =>
     optionsRow: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      alignItems: 'center',
+      alignItems: 'flex-end',
       marginBottom: 16,
       paddingHorizontal: 2,
+      width: '100%',
     },
     rememberRow: {
       flexDirection: 'row',
