@@ -25,7 +25,9 @@ export const linking: LinkingOptions<RootStackParamList> = {
       WebView: 'webview',
       ScanningStatus: 'scan/:mode',
       ImageDetection: 'image-detect',
+      VideoDetection: 'video-detect',
       TextDetection: 'text-detect',
+      ComingSoon: 'coming-soon',
     },
   },
 };

@@ -18,7 +18,7 @@ export type RootStackParamList = {
   Main: NavigatorScreenParams<MainTabParamList> | undefined;
   WebView: { title: string; uri: string };
   ScanningStatus: {
-    mode: 'text' | 'image' | 'video' | 'news';
+    mode: 'text' | 'image' | 'video';
     /** Optional media payload for image/video scans. */
     media?: {
       base64: string;
@@ -29,7 +29,9 @@ export type RootStackParamList = {
     text?: string;
   };
   ImageDetection: undefined;
+  VideoDetection: undefined;
   TextDetection: undefined;
+  ComingSoon: undefined;
 };
 
 type RootStackScreenProps = NativeStackScreenProps<RootStackParamList>;
@@ -66,9 +68,17 @@ export type ImageDetectionScreenProps = NativeStackScreenProps<
   RootStackParamList,
   'ImageDetection'
 >;
+export type VideoDetectionScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'VideoDetection'
+>;
 export type TextDetectionScreenProps = NativeStackScreenProps<
   RootStackParamList,
   'TextDetection'
+>;
+export type ComingSoonScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'ComingSoon'
 >;
 
 export type HomeScreenProps = CompositeScreenProps<
@@ -100,5 +110,7 @@ export enum RootStackScreens {
   WebView = 'WebView',
   ScanningStatus = 'ScanningStatus',
   ImageDetection = 'ImageDetection',
+  VideoDetection = 'VideoDetection',
   TextDetection = 'TextDetection',
+  ComingSoon = 'ComingSoon',
 }

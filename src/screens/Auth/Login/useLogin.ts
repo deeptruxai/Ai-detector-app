@@ -2,7 +2,12 @@ import { useState, useCallback } from 'react';
 import { Alert } from 'react-native';
 import { authService } from '@/service/firebase';
 import { RootStackScreens } from '@/navigation/types';
-import { navigateTo, resetNavigation, resetToMainTab } from '@/navigation/navUtils';
+import {
+  navigateTo,
+  resetNavigation,
+  resetToMainTab,
+  type RootStackNavigation,
+} from '@/navigation/navUtils';
 import { AuthConst } from '@/utils/Constants';
 
 interface LoginErrors {
@@ -26,7 +31,7 @@ interface UseLoginReturn {
   navigateToPhoneAuth: () => void;
 }
 
-export const useLogin = (): UseLoginReturn => {
+export const useLogin = (navigation: RootStackNavigation): UseLoginReturn => {
   const [email, setEmailState] = useState('');
   const [password, setPasswordState] = useState('');
   const [errors, setErrors] = useState<LoginErrors>({});
@@ -85,22 +90,28 @@ export const useLogin = (): UseLoginReturn => {
     setLoading(false);
 
     if (response.success) {
-      resetToMainTab('Home');
+      resetToMainTab(navigation, 'Home');
     } else {
-      Alert.alert(AuthConst.loginFailedTitle, response.error || AuthConst.tryAgainMessage);
+      Alert.alert(
+        AuthConst.loginFailedTitle,
+        response.error || AuthConst.tryAgainMessage,
+      );
     }
-  }, [email, password, validateForm]);
+  }, [email, password, navigation, validateForm]);
 
   const handleGoogleLogin = useCallback(async () => {
     setGoogleLoading(true);
     const response = await authService.signInWithGoogle();
     setGoogleLoading(false);
     if (response.success) {
-      resetToMainTab('Home');
+      resetToMainTab(navigation, 'Home');
     } else {
-      Alert.alert(AuthConst.loginFailedTitle, response.error || AuthConst.tryAgainMessage);
+      Alert.alert(
+        AuthConst.loginFailedTitle,
+        response.error || AuthConst.tryAgainMessage,
+      );
     }
-  }, []);
+  }, [navigation]);
 
   const handleForgotPassword = useCallback(async () => {
     if (!email.trim()) {
@@ -117,19 +128,25 @@ export const useLogin = (): UseLoginReturn => {
     setLoading(false);
 
     if (response.success) {
-      Alert.alert(AuthConst.resetEmailSentTitle, AuthConst.resetEmailSentMessage);
+      Alert.alert(
+        AuthConst.resetEmailSentTitle,
+        AuthConst.resetEmailSentMessage,
+      );
     } else {
-      Alert.alert(AuthConst.genericErrorTitle, response.error || AuthConst.resetEmailFailedMessage);
+      Alert.alert(
+        AuthConst.genericErrorTitle,
+        response.error || AuthConst.resetEmailFailedMessage,
+      );
     }
   }, [email, validateEmail]);
 
   const navigateToSignup = useCallback(() => {
-    resetNavigation(RootStackScreens.Signup);
-  }, []);
+    resetNavigation(navigation, RootStackScreens.Signup);
+  }, [navigation]);
 
   const navigateToPhoneAuth = useCallback(() => {
-    navigateTo(RootStackScreens.PhoneAuth);
-  }, []);
+    navigateTo(navigation, RootStackScreens.PhoneAuth);
+  }, [navigation]);
 
   return {
     email,

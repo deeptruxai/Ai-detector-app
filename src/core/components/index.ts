@@ -6,5 +6,7 @@ export { AppBar } from './AppBar';
 export type { AppBarProps } from './AppBar';
 export { default as IconWithBackground } from './atoms/IconWithBackground';
 export type { IconWithBackgroundProps } from './atoms/IconWithBackground';
+export { default as HeaderBackButton } from './atoms/HeaderBackButton';
+export type { HeaderBackButtonProps } from './atoms/HeaderBackButton';
 export { LoadingState, ErrorState } from './states';
 export type { LoadingStateProps, ErrorStateProps } from './states';

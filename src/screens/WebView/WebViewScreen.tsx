@@ -6,7 +6,7 @@ import type { WebViewScreenProps } from '@/navigation/types';
 import { goBack } from '@/navigation/navUtils';
 import { isAllowlistedLegalUrl } from '@/utils/legalUrls';
 
-const WebViewScreen: React.FC<WebViewScreenProps> = ({ route }) => {
+const WebViewScreen: React.FC<WebViewScreenProps> = ({ route, navigation }) => {
   const { title, uri } = route.params;
 
   const [loading, setLoading] = useState(true);
@@ -36,17 +36,17 @@ const WebViewScreen: React.FC<WebViewScreenProps> = ({ route }) => {
 
   if (!allowed) {
     return (
-      <SafeScreen style={styles.flex}>
+      <SafeScreen>
         <AppBar
           title={title}
           showBack
-          onBackPress={() => goBack()}
+          onBackPress={() => goBack(navigation)}
           absolute={false}
         />
         <ErrorState
           title="Unable to open link"
           message="This address is not allowed in the app."
-          onRetry={() => goBack()}
+          onRetry={() => goBack(navigation)}
           retryLabel="Go back"
         />
       </SafeScreen>
@@ -54,11 +54,11 @@ const WebViewScreen: React.FC<WebViewScreenProps> = ({ route }) => {
   }
 
   return (
-    <SafeScreen style={styles.flex}>
+    <SafeScreen>
       <AppBar
         title={title}
         showBack
-        onBackPress={() => goBack()}
+        onBackPress={() => goBack(navigation)}
         absolute={false}
       />
       {error ? (

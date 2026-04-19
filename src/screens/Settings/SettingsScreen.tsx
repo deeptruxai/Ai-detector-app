@@ -20,7 +20,7 @@ export const SettingsScreen: React.FC = () => {
   };
 
   return (
-    <SafeScreen style={{ backgroundColor: theme.colors.background }}>
+    <SafeScreen>
       <ScrollView>
         {/* Header */}
         <View style={[styles.header, { backgroundColor: theme.colors.surface, borderBottomColor: theme.colors.border }]}>

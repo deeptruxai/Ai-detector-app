@@ -8,55 +8,73 @@ import {
 } from 'react-native';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
-import { Text, SafeScreen } from '@/core/components';
+import { Text, SafeScreen, HeaderBackButton } from '@/core/components';
 import { authService } from '@/service/firebase';
 import { Theme, useTheme } from '@/core/theme';
-import { goBack, resetNavigation } from '@/navigation/navUtils';
+import { useNavigation } from '@react-navigation/native';
+import {
+  goBack,
+  resetNavigation,
+  type RootStackNavigation,
+} from '@/navigation/navUtils';
 import { RootStackScreens } from '@/navigation/types';
 import { CommonConst, ProfileConst } from '@/utils/Constants';
 
 const ProfileScreen: React.FC = () => {
   const { theme } = useTheme();
+  const navigation = useNavigation<RootStackNavigation>();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const user = authService.currentUser;
 
   const handleLogout = () => {
-    Alert.alert(ProfileConst.logoutAlertTitle, ProfileConst.logoutAlertMessage, [
-      { text: ProfileConst.cancelButton, style: 'cancel' },
-      {
-        text: ProfileConst.logoutButton,
-        style: 'destructive',
-        onPress: async () => {
-          const response = await authService.signOut();
-          if (response.success) {
-            resetNavigation(RootStackScreens.Login);
-          }
+    Alert.alert(
+      ProfileConst.logoutAlertTitle,
+      ProfileConst.logoutAlertMessage,
+      [
+        { text: ProfileConst.cancelButton, style: 'cancel' },
+        {
+          text: ProfileConst.logoutButton,
+          style: 'destructive',
+          onPress: async () => {
+            const response = await authService.signOut();
+            if (response.success) {
+              resetNavigation(navigation, RootStackScreens.Login);
+            }
+          },
         },
-      },
-    ]);
+      ],
+    );
   };
 
   const menuItems = ProfileConst.menuItems;
 
   return (
-    <SafeScreen style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+    <SafeScreen>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => goBack()} style={styles.backButton}>
-             <Text style={styles.backText}>{CommonConst.backArrow}</Text>
-          </TouchableOpacity>
-          <Text size="xxl" style={styles.title}>{ProfileConst.title}</Text>
+          <HeaderBackButton onPress={() => goBack(navigation)} />
+          <Text size="xxl" style={styles.title}>
+            {ProfileConst.title}
+          </Text>
         </View>
 
         <View style={styles.profileInfo}>
           <View style={[styles.avatar, { borderColor: theme.colors.primary }]}>
             <Text style={styles.avatarText}>
-              {user?.email?.charAt(0).toUpperCase() || CommonConst.unknownUserInitial}
+              {user?.email?.charAt(0).toUpperCase() ||
+                CommonConst.unknownUserInitial}
             </Text>
           </View>
-          <Text size="xl" style={styles.name}>{user?.displayName || ProfileConst.fallbackName}</Text>
-          <Text style={styles.email}>{user?.email || ProfileConst.fallbackEmail}</Text>
-          
+          <Text size="xl" style={styles.name}>
+            {user?.displayName || ProfileConst.fallbackName}
+          </Text>
+          <Text style={styles.email}>
+            {user?.email || ProfileConst.fallbackEmail}
+          </Text>
+
           <Card variant="glass" style={styles.proBadge} padding="sm">
             <Text style={styles.proText}>{ProfileConst.proAccountLabel}</Text>
           </Card>
@@ -76,13 +94,19 @@ const ProfileScreen: React.FC = () => {
 
         <View style={styles.menuSection}>
           {menuItems.map((item, index) => (
-             <TouchableOpacity key={index} style={[styles.menuItem, { borderBottomColor: theme.colors.border }]}>
-                <View style={styles.menuLeft}>
-                  <Text style={styles.menuIcon}>{item.icon}</Text>
-                  <Text style={styles.menuLabel}>{item.label}</Text>
-                </View>
-                <Text style={styles.menuArrow}>{CommonConst.nextArrow}</Text>
-             </TouchableOpacity>
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.menuItem,
+                { borderBottomColor: theme.colors.border },
+              ]}
+            >
+              <View style={styles.menuLeft}>
+                <Text style={styles.menuIcon}>{item.icon}</Text>
+                <Text style={styles.menuLabel}>{item.label}</Text>
+              </View>
+              <Text style={styles.menuArrow}>{CommonConst.nextArrow}</Text>
+            </TouchableOpacity>
           ))}
         </View>
 
@@ -93,7 +117,7 @@ const ProfileScreen: React.FC = () => {
           style={styles.logoutButton}
           textStyle={{ color: theme.colors.error }}
         />
-        
+
         <Text style={styles.version}>{ProfileConst.version}</Text>
       </ScrollView>
     </SafeScreen>
@@ -104,9 +128,6 @@ export default ProfileScreen;
 
 const createStyles = (theme: Theme) =>
   StyleSheet.create({
-    container: {
-      backgroundColor: theme.colors.background,
-    },
     scrollContent: {
       paddingHorizontal: 24,
       paddingTop: 20,
@@ -116,13 +137,6 @@ const createStyles = (theme: Theme) =>
       flexDirection: 'row',
       alignItems: 'center',
       marginBottom: 32,
-    },
-    backButton: {
-      marginRight: 16,
-    },
-    backText: {
-      color: theme.colors.text,
-      fontSize: 24,
     },
     title: {
       fontWeight: 'bold',

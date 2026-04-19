@@ -13,13 +13,15 @@ import { AppBar, Text, SafeScreen, PrimaryButton } from '@/core/components';
 import { Theme, useTheme } from '@/core/theme';
 import { AuthConst } from '@/utils/Constants';
 import { authService } from '@/service/firebase';
-import { goBack, navigateTo } from '@/navigation/navUtils';
+import { useNavigation } from '@react-navigation/native';
+import { goBack, navigateTo, type RootStackNavigation } from '@/navigation/navUtils';
 import { RootStackScreens } from '@/navigation/types';
 
 const PLACEHOLDER_MUTED = 'rgba(187, 202, 191, 0.4)';
 
 const PhoneAuthScreen: React.FC = () => {
   const { theme } = useTheme();
+  const navigation = useNavigation<RootStackNavigation>();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
@@ -35,13 +37,13 @@ const PhoneAuthScreen: React.FC = () => {
     const result = await authService.startPhoneSignIn(trimmed);
     setLoading(false);
     if (result.success) {
-      navigateTo(RootStackScreens.VerifyOTP, {
+      navigateTo(navigation, RootStackScreens.VerifyOTP, {
         phoneNumber: trimmed,
       });
     } else {
       Alert.alert(AuthConst.genericErrorTitle, result.error || AuthConst.tryAgainMessage);
     }
-  }, [phone]);
+  }, [navigation, phone]);
 
   const fieldRowStyle = useMemo(
     () => ({
@@ -65,14 +67,16 @@ const PhoneAuthScreen: React.FC = () => {
   );
 
   return (
-    <SafeScreen style={styles.container}>
+    <SafeScreen
+      statusBarColor={theme.colors.appBarBackground}
+      bottomInsetColor={theme.colors.background}>
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <AppBar
           title={AuthConst.phoneAuthTitle}
           showBack
-          onBackPress={() => goBack()}
+          onBackPress={() => goBack(navigation)}
           absolute={false}
           containerStyle={styles.appBarPad}
         />
@@ -120,10 +124,6 @@ export default PhoneAuthScreen;
 
 const createStyles = (theme: Theme) =>
   StyleSheet.create({
-    container: {
-      backgroundColor: theme.colors.backgroundSecondary,
-      flex: 1,
-    },
     flex: { flex: 1 },
     appBarPad: {
       paddingHorizontal: 16,

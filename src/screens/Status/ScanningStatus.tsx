@@ -1,18 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
-import {
-  StyleSheet,
-  View,
-  Animated,
-  Easing,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
-import { Text, SafeScreen } from '@/core/components';
+import { StyleSheet, View, Animated, Easing, ScrollView } from 'react-native';
+import { Text, SafeScreen, HeaderBackButton } from '@/core/components';
 import { Button } from '@/components/Button';
 import { Theme, useTheme } from '@/core/theme';
 import { ScanningStatusScreenProps } from '@/navigation/types';
 import { goBack, replaceTo } from '@/navigation/navUtils';
-import { CommonConst, ResultConst, StatusConst } from '@/utils/Constants';
+import { ResultConst, StatusConst } from '@/utils/Constants';
 import {
   AiDetectionError,
   DetectionResult,
@@ -66,7 +59,10 @@ const useFakeProgress = (active: boolean) => {
   return { progress, width, finalize };
 };
 
-const ScanningStatusScreen: React.FC<ScanningStatusScreenProps> = ({ route }) => {
+const ScanningStatusScreen: React.FC<ScanningStatusScreenProps> = ({
+  route,
+  navigation,
+}) => {
   const { mode, media, text } = route.params;
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -119,26 +115,16 @@ const ScanningStatusScreen: React.FC<ScanningStatusScreenProps> = ({ route }) =>
       return;
     }
 
-    const timer = setTimeout(() => {
-      finalize();
-      setResult({
-        score: 0,
-        isAI: false,
-        reasoning: 'Detection for this mode is not available yet.',
-        confidence: 'Low',
-        artifacts: [],
-      });
-      setPhase('done');
-    }, 1500);
-    return () => clearTimeout(timer);
+    setErrorMessage(ResultConst.genericErrorMessage);
+    setPhase('error');
   }, [phase, mode, media, text, runAnalysis, finalize]);
 
   if (phase === 'done' && result) {
     return (
       <ResultView
         result={result}
-        onDone={() => replaceTo('Main', { screen: 'Home' })}
-        onRetry={() => goBack()}
+        onDone={() => replaceTo(navigation, 'Main', { screen: 'Home' })}
+        onRetry={() => goBack(navigation)}
       />
     );
   }
@@ -147,14 +133,14 @@ const ScanningStatusScreen: React.FC<ScanningStatusScreenProps> = ({ route }) =>
     return (
       <ErrorView
         message={errorMessage ?? ResultConst.genericErrorMessage}
-        onRetry={() => goBack()}
-        onDone={() => replaceTo('Main', { screen: 'Home' })}
+        onRetry={() => goBack(navigation)}
+        onDone={() => replaceTo(navigation, 'Main', { screen: 'Home' })}
       />
     );
   }
 
   return (
-    <SafeScreen style={styles.container}>
+    <SafeScreen>
       <View style={styles.content}>
         <Text size="xxxl" style={styles.title}>
           {StatusConst.scanningPrefix} {mode}{StatusConst.scanningSuffix}
@@ -200,12 +186,10 @@ const ResultView: React.FC<ResultViewProps> = ({ result, onDone, onRetry }) => {
   const verdict = result.isAI ? ResultConst.aiGeneratedLabel : ResultConst.authenticLabel;
 
   return (
-    <SafeScreen style={styles.container}>
+    <SafeScreen>
       <ScrollView contentContainerStyle={styles.resultScroll}>
         <View style={styles.resultHeader}>
-          <TouchableOpacity onPress={onRetry} style={styles.backButton}>
-            <Text style={styles.backText}>{CommonConst.backArrow}</Text>
-          </TouchableOpacity>
+          <HeaderBackButton onPress={onRetry} />
           <Text size="xxl" style={styles.title}>
             {ResultConst.resultTitle}
           </Text>
@@ -258,7 +242,7 @@ const ErrorView: React.FC<ErrorViewProps> = ({ message, onRetry, onDone }) => {
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   return (
-    <SafeScreen style={styles.container}>
+    <SafeScreen>
       <View style={styles.content}>
         <Text size="xxl" style={[styles.title, { color: theme.colors.error }]}>
           {ResultConst.errorTitle}
@@ -293,9 +277,6 @@ export default ScanningStatusScreen;
 
 const createStyles = (theme: Theme) =>
   StyleSheet.create({
-    container: {
-      backgroundColor: theme.colors.background,
-    },
     content: {
       flex: 1,
       justifyContent: 'center',
@@ -365,13 +346,6 @@ const createStyles = (theme: Theme) =>
       flexDirection: 'row',
       alignItems: 'center',
       marginBottom: 24,
-    },
-    backButton: {
-      marginRight: 16,
-    },
-    backText: {
-      color: theme.colors.text,
-      fontSize: 24,
     },
     verdictCard: {
       borderWidth: 1,

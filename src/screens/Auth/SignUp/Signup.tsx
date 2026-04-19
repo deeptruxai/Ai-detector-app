@@ -13,12 +13,15 @@ import { Input } from '@/components/Input';
 import { AppBar, Text, SafeScreen, PrimaryButton } from '@/core/components';
 import { Theme, useTheme } from '@/core/theme';
 import { AuthConst } from '@/utils/Constants';
+import { useNavigation } from '@react-navigation/native';
+import type { RootStackNavigation } from '@/navigation/navUtils';
 import { useSignup } from './useSignup';
 
 const PLACEHOLDER_MUTED = 'rgba(187, 202, 191, 0.4)';
 
 const SignupScreen: React.FC = () => {
   const { theme } = useTheme();
+  const navigation = useNavigation<RootStackNavigation>();
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => createStyles(theme, insets.top), [theme, insets.top]);
   const [showPassword, setShowPassword] = useState(false);
@@ -40,7 +43,7 @@ const SignupScreen: React.FC = () => {
     openTerms,
     openPrivacy,
     navigateToLogin,
-  } = useSignup();
+  } = useSignup(navigation);
 
   const fieldRowStyle = useMemo(
     () => ({
@@ -64,7 +67,9 @@ const SignupScreen: React.FC = () => {
   );
 
   return (
-    <SafeScreen style={styles.container}>
+    <SafeScreen
+      statusBarColor={theme.colors.appBarBackground}
+      bottomInsetColor={theme.colors.background}>
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -222,9 +227,6 @@ export default SignupScreen;
 
 const createStyles = (theme: Theme, insetTop: number) =>
   StyleSheet.create({
-    container: {
-      backgroundColor: theme.colors.backgroundSecondary,
-    },
     flex: {
       flex: 1,
     },

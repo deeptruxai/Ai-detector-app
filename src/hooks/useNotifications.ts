@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Alert } from 'react-native';
 import { messagingService, RemoteMessage } from '@/service/firebase';
+import { navigateFromNotificationPayload } from '@/navigation/navUtils';
 
 interface NotificationData {
   title?: string;
@@ -142,9 +143,7 @@ export const useNotifications = (): UseNotificationsReturn => {
     console.log('🎯 Handling notification action:', notification);
 
     if (notification.data?.screen) {
-      console.log('📍 Navigate to:', notification.data.screen);
-      // TODO: Implement navigation logic
-      // navigation.navigate(notification.data.screen);
+      navigateFromNotificationPayload(notification.data);
     }
 
     if (notification.data?.url) {

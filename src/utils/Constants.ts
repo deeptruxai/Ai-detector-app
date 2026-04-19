@@ -1,5 +1,4 @@
 export const CommonConst = {
-  backArrow: '←',
   nextArrow: '›',
   unknownUserInitial: 'U',
 };
@@ -110,6 +109,13 @@ export const HomeConst = {
   newsModeIcon: '🌐',
 };
 
+export const ComingSoonConst = {
+  headline: 'Coming soon',
+  message:
+    'News credibility checks are not available yet. We will add this in a future update.',
+  backButton: 'Go back',
+};
+
 export const DetectionConst = {
   textScreenTitle: 'Text Detection',
   textPlaceholder: 'Paste or type content here...',
@@ -136,6 +142,18 @@ export const DetectionConst = {
   imageSelectedSubtitle: 'Tap "Start AI Scan" to analyze.',
   pickerErrorTitle: 'Could not select media',
   noMediaError: 'Please select an image first.',
+  videoScreenTitle: 'Video Detection',
+  videoUploadIcon: '🎥',
+  videoUploadTitle: 'Select Video',
+  videoUploadSubtitle: 'Supports MP4, MOV, WebM (max 25MB)',
+  videoReadyTitle: 'Video selected',
+  videoSelectedSubtitle: 'Tap "Start AI Scan" to analyze.',
+  selectVideoButton: 'Select Video',
+  changeVideoButton: 'Change Video',
+  noVideoError: 'Please select a video first.',
+  videoGuidelineOne: '1. Shorter clips analyze faster and more reliably',
+  videoGuidelineTwo: '2. Use the original file when possible',
+  videoGuidelineThree: '3. Maximum size 25MB',
 };
 
 export const ResultConst = {

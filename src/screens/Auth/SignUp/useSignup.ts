@@ -1,7 +1,11 @@
 import { useState, useCallback, useMemo } from 'react';
 import { Alert } from 'react-native';
 import { authService } from '@/service/firebase';
-import { navigateTo, resetToMainTab } from '@/navigation/navUtils';
+import {
+  navigateTo,
+  resetToMainTab,
+  type RootStackNavigation,
+} from '@/navigation/navUtils';
 import { AuthConst } from '@/utils/Constants';
 
 interface SignupErrors {
@@ -40,7 +44,7 @@ interface UseSignupReturn {
   navigateToLogin: () => void;
 }
 
-export const useSignup = (): UseSignupReturn => {
+export const useSignup = (navigation: RootStackNavigation): UseSignupReturn => {
   const [name, setNameState] = useState('');
   const [email, setEmailState] = useState('');
   const [password, setPasswordState] = useState('');
@@ -132,40 +136,40 @@ export const useSignup = (): UseSignupReturn => {
     setLoading(false);
 
     if (response.success) {
-      resetToMainTab('Home');
+      resetToMainTab(navigation, 'Home');
     } else {
       Alert.alert(AuthConst.signupFailedTitle, response.error || AuthConst.tryAgainMessage);
     }
-  }, [name, email, password, validateForm]);
+  }, [name, email, navigation, password, validateForm]);
 
   const handleGoogleSignup = useCallback(async () => {
     setGoogleLoading(true);
     const response = await authService.signInWithGoogle();
     setGoogleLoading(false);
     if (response.success) {
-      resetToMainTab('Home');
+      resetToMainTab(navigation, 'Home');
     } else {
       Alert.alert(AuthConst.signupFailedTitle, response.error || AuthConst.tryAgainMessage);
     }
-  }, []);
+  }, [navigation]);
 
   const openTerms = useCallback(() => {
-    navigateTo('WebView', {
+    navigateTo(navigation, 'WebView', {
       title: AuthConst.webViewTermsTitle,
       uri: AuthConst.termsUrl,
     });
-  }, []);
+  }, [navigation]);
 
   const openPrivacy = useCallback(() => {
-    navigateTo('WebView', {
+    navigateTo(navigation, 'WebView', {
       title: AuthConst.webViewPrivacyTitle,
       uri: AuthConst.privacyUrl,
     });
-  }, []);
+  }, [navigation]);
 
   const navigateToLogin = useCallback(() => {
-    navigateTo('Login');
-  }, []);
+    navigateTo(navigation, 'Login');
+  }, [navigation]);
 
   return {
     name,

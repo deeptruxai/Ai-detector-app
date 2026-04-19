@@ -16,7 +16,7 @@ import { AuthConst } from '@/utils/Constants';
 import { authService } from '@/service/firebase';
 import { resetToMainTab } from '@/navigation/navUtils';
 
-const VerifyOTPScreen: React.FC<VerifyOTPScreenProps> = ({ route }) => {
+const VerifyOTPScreen: React.FC<VerifyOTPScreenProps> = ({ route, navigation }) => {
   const { phoneNumber } = route.params;
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -53,11 +53,11 @@ const VerifyOTPScreen: React.FC<VerifyOTPScreenProps> = ({ route }) => {
     const result = await authService.confirmPhoneCode(code);
     setLoading(false);
     if (result.success) {
-      resetToMainTab('Home');
+      resetToMainTab(navigation, 'Home');
     } else {
       Alert.alert(AuthConst.loginFailedTitle, result.error || AuthConst.tryAgainMessage);
     }
-  }, [otp]);
+  }, [navigation, otp]);
 
   const resend = useCallback(async () => {
     setResendLoading(true);
@@ -72,7 +72,10 @@ const VerifyOTPScreen: React.FC<VerifyOTPScreenProps> = ({ route }) => {
   }, [phoneNumber]);
 
   return (
-    <SafeScreen style={styles.container}>
+    <SafeScreen
+      statusBarColor={theme.colors.appBarBackground}
+      bottomInsetColor={theme.colors.background}
+      backgroundColor={theme.colors.background}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -149,9 +152,6 @@ export default VerifyOTPScreen;
 
 const createStyles = (theme: Theme) =>
   StyleSheet.create({
-    container: {
-      backgroundColor: theme.colors.background,
-    },
     scrollContent: {
       flexGrow: 1,
       paddingHorizontal: 24,

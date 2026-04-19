@@ -4,11 +4,17 @@ import { Card } from '@/components/Card';
 import { Text, SafeScreen } from '@/core/components';
 import { Theme, useTheme } from '@/core/theme';
 import { authService } from '@/service/firebase';
-import { navigateTo, navigateToMainTab } from '@/navigation/navUtils';
+import { useNavigation } from '@react-navigation/native';
+import {
+  navigateTo,
+  navigateToMainTab,
+  type RootStackNavigation,
+} from '@/navigation/navUtils';
 import { HomeConst, CommonConst } from '@/utils/Constants';
 
 const HomeScreen: React.FC = () => {
   const { theme } = useTheme();
+  const navigation = useNavigation<RootStackNavigation>();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const user = authService.currentUser;
 
@@ -34,8 +40,7 @@ const HomeScreen: React.FC = () => {
       title: HomeConst.videoModeTitle,
       description: HomeConst.videoModeDescription,
       icon: HomeConst.videoModeIcon,
-      route: 'ScanningStatus',
-      params: { mode: 'video' },
+      route: 'VideoDetection',
       accent: '#8B5CF6',
     },
     {
@@ -43,25 +48,37 @@ const HomeScreen: React.FC = () => {
       title: HomeConst.newsModeTitle,
       description: HomeConst.newsModeDescription,
       icon: HomeConst.newsModeIcon,
-      route: 'ScanningStatus',
-      params: { mode: 'news' },
+      route: 'ComingSoon',
       accent: '#3B82F6',
     },
   ];
 
   return (
-    <SafeScreen style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+    <SafeScreen>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.header}>
           <View>
             <Text size="xxl" style={styles.greeting}>
               Hello, {user?.displayName || HomeConst.fallbackUserName}
             </Text>
-            <Text style={styles.headerSubtitle}>{HomeConst.headerSubtitle}</Text>
+            <Text style={styles.headerSubtitle}>
+              {HomeConst.headerSubtitle}
+            </Text>
           </View>
-          <TouchableOpacity onPress={() => navigateToMainTab('Profile')} style={styles.profileToggle}>
-            <View style={[styles.avatar, { borderColor: theme.colors.primary }]}>
-               <Text style={styles.avatarText}>{user?.email?.charAt(0).toUpperCase() || CommonConst.unknownUserInitial}</Text>
+          <TouchableOpacity
+            onPress={() => navigateToMainTab(navigation, 'Profile')}
+            style={styles.profileToggle}
+          >
+            <View
+              style={[styles.avatar, { borderColor: theme.colors.primary }]}
+            >
+              <Text style={styles.avatarText}>
+                {user?.email?.charAt(0).toUpperCase() ||
+                  CommonConst.unknownUserInitial}
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -69,37 +86,52 @@ const HomeScreen: React.FC = () => {
         <View style={styles.badgeContainer}>
           <Card variant="glass" style={styles.badgeCard} padding="sm">
             <View style={styles.badgeContent}>
-              <View style={[styles.badgeIcon, { backgroundColor: theme.colors.primary }]}>
+              <View
+                style={[
+                  styles.badgeIcon,
+                  { backgroundColor: theme.colors.primary },
+                ]}
+              >
                 <Text>{HomeConst.badgeIcon}</Text>
               </View>
               <View>
                 <Text style={styles.badgeTitle}>{HomeConst.badgeTitle}</Text>
-                <Text style={styles.badgeSubtitle}>{HomeConst.badgeSubtitle}</Text>
+                <Text style={styles.badgeSubtitle}>
+                  {HomeConst.badgeSubtitle}
+                </Text>
               </View>
             </View>
           </Card>
         </View>
 
-        <Text size="lg" style={styles.sectionTitle}>{HomeConst.sectionTitle}</Text>
-        
+        <Text size="lg" style={styles.sectionTitle}>
+          {HomeConst.sectionTitle}
+        </Text>
+
         <View style={styles.modesGrid}>
-          {modes.map((mode) => (
+          {modes.map(mode => (
             <Card
               key={mode.id}
               variant="default"
               style={styles.modeCard}
               onPress={() => {
-                if (mode.route === 'ScanningStatus') {
-                  navigateTo('ScanningStatus', {
-                    mode: mode.id as 'video' | 'news',
-                  });
-                } else if (mode.route === 'TextDetection') {
-                  navigateTo('TextDetection');
+                if (mode.route === 'TextDetection') {
+                  navigateTo(navigation, 'TextDetection');
+                } else if (mode.route === 'VideoDetection') {
+                  navigateTo(navigation, 'VideoDetection');
+                } else if (mode.route === 'ComingSoon') {
+                  navigateTo(navigation, 'ComingSoon');
                 } else {
-                  navigateTo('ImageDetection');
+                  navigateTo(navigation, 'ImageDetection');
                 }
-              }}>
-              <View style={[styles.modeIconContainer, { backgroundColor: mode.accent + '20' }]}>
+              }}
+            >
+              <View
+                style={[
+                  styles.modeIconContainer,
+                  { backgroundColor: mode.accent + '20' },
+                ]}
+              >
                 <Text style={styles.modeEmoji}>{mode.icon}</Text>
               </View>
               <Text style={styles.modeTitle}>{mode.title}</Text>
@@ -116,9 +148,6 @@ export default HomeScreen;
 
 const createStyles = (theme: Theme) =>
   StyleSheet.create({
-    container: {
-      backgroundColor: theme.colors.background,
-    },
     scrollContent: {
       paddingHorizontal: 20,
       paddingTop: 20,

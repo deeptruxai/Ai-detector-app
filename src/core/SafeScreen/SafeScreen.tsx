@@ -19,6 +19,7 @@ interface SafeScreenProps {
   gradientColors?: string[];
   onBackPress?: () => boolean;
   style?: ViewStyle;
+  backgroundColor?: string;
 }
 
 const SafeScreen: React.FC<SafeScreenProps> = ({
@@ -29,10 +30,13 @@ const SafeScreen: React.FC<SafeScreenProps> = ({
   gradientColors,
   onBackPress,
   style,
+  backgroundColor,
 }) => {
   const { theme } = useTheme();
-  const statusBarColor = statusBarColorProp??theme.colors.appBarBackground;
-  const bottomInsetColor = bottomInsetColorProp ?? theme.colors.background;
+  const resolvedSurface =
+    backgroundColor ?? theme.colors.backgroundSecondary;
+  const statusBarColor = statusBarColorProp ?? resolvedSurface;
+  const bottomInsetColor = bottomInsetColorProp ?? resolvedSurface;
   const barStyle = barStyleProp ?? 'light-content';
   const insets = useSafeAreaInsets();
 
@@ -83,9 +87,21 @@ const SafeScreen: React.FC<SafeScreenProps> = ({
     <View style={styles.container}>
       <StatusBar barStyle={barStyle} backgroundColor={statusBarColor} />
 
-      <View style={{ height: insets.top, backgroundColor: statusBarColor }} />
+      <View
+        style={{
+          height: insets.top,
+          backgroundColor: resolvedSurface,
+        }}
+      />
 
-      <View style={[styles.content, style]}>{children}</View>
+      <View
+        style={[
+          styles.content,
+          { backgroundColor: resolvedSurface },
+          style,
+        ]}>
+        {children}
+      </View>
       <View
         style={{ height: insets.bottom, backgroundColor: bottomInsetColor }}
       />

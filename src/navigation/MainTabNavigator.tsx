@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useTheme } from '@/core/theme';
@@ -36,9 +36,6 @@ const MainTabNavigator: React.FC = () => {
       tabBarStyle: {
         backgroundColor: theme.colors.backgroundSecondary,
         borderTopColor: 'rgba(255,255,255,0.06)',
-        height: Platform.OS === 'ios' ? 88 : 64,
-        paddingBottom: Platform.OS === 'ios' ? 28 : 10,
-        paddingTop: 8,
       },
       tabBarLabelStyle: styles.tabLabel,
     }),

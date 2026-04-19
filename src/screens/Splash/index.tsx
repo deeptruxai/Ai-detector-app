@@ -2,6 +2,7 @@ import React, { useEffect, useMemo } from 'react';
 import {
   Image,
   Platform,
+  StatusBar,
   StyleProp,
   StyleSheet,
   View,
@@ -20,7 +21,9 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
+import { useNavigation } from '@react-navigation/native';
 import { resetNavigation, RootStackScreens } from '@/navigation';
+import type { RootStackNavigation } from '@/navigation/navUtils';
 import { authService } from '@/service/firebase';
 import { SplashConst } from '@/utils/Constants';
 import AppLogo from '@/images/svg/Logo';
@@ -78,6 +81,7 @@ function getSplashRadialGradientGeometry(screenW: number, screenH: number) {
 
 const SplashScreen: React.FC = () => {
   const { theme } = useTheme();
+  const navigation = useNavigation<RootStackNavigation>();
   const { width, height } = useWindowDimensions();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const splashRadial = useMemo(
@@ -115,10 +119,10 @@ const SplashScreen: React.FC = () => {
       const next = authService.isLoggedIn
         ? RootStackScreens.Main
         : RootStackScreens.Login;
-      resetNavigation(next);
+      resetNavigation(navigation, next);
     }, SplashConst.navigationDelayMs);
     return () => clearTimeout(id);
-  }, []);
+  }, [navigation]);
 
   const progressFillStyle = useAnimatedStyle(() => ({
     width: interpolate(progressFill.value, [0, 1], [0, 240]),
@@ -126,6 +130,10 @@ const SplashScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor={theme.colors.backgroundSecondary}
+      />
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
         <Svg width={width} height={height}>
           <Defs>
@@ -227,7 +235,7 @@ const createStyles = (theme: Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.colors.splashRadialEdge,
+      backgroundColor: theme.colors.backgroundSecondary,
       overflow: 'hidden',
     },
     gridOverlay: {

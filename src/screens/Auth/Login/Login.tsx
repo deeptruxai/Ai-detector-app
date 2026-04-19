@@ -12,10 +12,13 @@ import { Input } from '@/components/Input';
 import { Text, SafeScreen, IconWithBackground } from '@/core/components';
 import { Theme, useTheme } from '@/core/theme';
 import { AuthConst } from '@/utils/Constants';
+import { useNavigation } from '@react-navigation/native';
+import type { RootStackNavigation } from '@/navigation/navUtils';
 import { useLogin } from './useLogin';
 
 const LoginScreen: React.FC = () => {
   const { theme } = useTheme();
+  const navigation = useNavigation<RootStackNavigation>();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const {
@@ -31,10 +34,12 @@ const LoginScreen: React.FC = () => {
     handleForgotPassword,
     navigateToSignup,
     navigateToPhoneAuth,
-  } = useLogin();
+  } = useLogin(navigation);
 
   return (
-    <SafeScreen style={styles.container}>
+    <SafeScreen
+      statusBarColor={theme.colors.appBarBackground}
+      bottomInsetColor={theme.colors.background}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -168,9 +173,6 @@ export default LoginScreen;
 
 const createStyles = (theme: Theme) =>
   StyleSheet.create({
-    container: {
-      backgroundColor: theme.colors.backgroundSecondary,
-    },
     scrollContent: {
       flexGrow: 1,
       paddingHorizontal: 24,
